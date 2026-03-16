@@ -1,0 +1,2636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herbert & Webster — 3Ls Investment Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2a4a;
+    --navy-mid: #1e3054;
+    --navy-light: #243660;
+    --gold: #b8942a;
+    --gold-light: #d4aa45;
+    --white: #ffffff;
+    --text-light: rgba(255,255,255,0.75);
+    --text-muted: rgba(255,255,255,0.45);
+    --border: rgba(184,148,42,0.25);
+    --border-light: rgba(255,255,255,0.1);
+    --liquidity: #4a90c4;
+    --lifestyle: #b8942a;
+    --legacy: #6b9e6b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(184,148,42,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(74,144,196,0.06) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative; z-index: 10;
+    padding: 22px 48px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(26,42,74,0.97);
+    backdrop-filter: blur(12px);
+  }
+
+  .logo-area { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  .logo-mark { width: 52px; height: 52px; border-radius: 8px; overflow: hidden; }
+  .logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .logo-text h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 500; letter-spacing: 0.05em; line-height: 1.1;
+  }
+  .logo-text p { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 400; }
+
+  /* Client block centre of header */
+  .client-block { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .client-label { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); }
+  .client-rows { display: flex; flex-direction: column; gap: 6px; }
+  .client-row { display: flex; align-items: center; gap: 8px; }
+  .client-row-tag {
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-muted); font-weight: 500; width: 52px; text-align: right; flex-shrink: 0;
+  }
+  .client-row-tag.c1 { color: #7eb8e0; }
+  .client-row-tag.c2 { color: #c4a35a; }
+  .client-prefix-select {
+    background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--white); font-family: 'Jost', sans-serif;
+    font-size: 12px; font-weight: 400; padding: 5px 7px; outline: none; cursor: pointer;
+  }
+  .client-prefix-select option { background: var(--navy); }
+  .client-name-input {
+    background: transparent; border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--white); font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 400; letter-spacing: 0.04em;
+    width: 180px; outline: none; padding-bottom: 2px;
+    transition: border-color 0.3s; text-align: left;
+  }
+  .client-name-input:focus { border-bottom-color: var(--gold); }
+  .client-name-input::placeholder { color: rgba(255,255,255,0.18); font-size: 14px; letter-spacing: 0.02em; }
+
+  .header-right-block { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+  .header-meta-row { display: flex; gap: 16px; align-items: flex-end; }
+  .header-meta-field { display: flex; flex-direction: column; gap: 4px; }
+  .header-meta-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); font-weight: 500; }
+  .header-meta-select, .header-meta-date {
+    background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--white); font-family: "Jost", sans-serif;
+    font-size: 13px; font-weight: 400; padding: 6px 10px; outline: none; cursor: pointer;
+    color-scheme: dark;
+  }
+  .header-meta-select option { background: var(--navy); }
+  .header-tag { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); font-weight: 400; }
+
+  /* ── SAVE / LOAD BAR ── */
+  .save-bar {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 24px; margin-bottom: 28px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .save-bar-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-right: 4px; flex-shrink: 0; }
+  .save-client-select {
+    background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--white); font-family: "Jost", sans-serif;
+    font-size: 13px; padding: 7px 12px; outline: none; min-width: 180px; flex: 1; max-width: 260px;
+  }
+  .save-client-select option { background: var(--navy); }
+  .save-btn {
+    background: var(--gold); color: var(--navy); border: none; border-radius: 8px;
+    font-family: "Jost", sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.08em; padding: 8px 18px; cursor: pointer; transition: all 0.2s;
+    text-transform: uppercase; flex-shrink: 0;
+  }
+  .save-btn:hover { background: var(--gold-light); }
+  .save-btn.secondary {
+    background: transparent; color: var(--text-light);
+    border: 1px solid var(--border-light);
+  }
+  .save-btn.secondary:hover { background: rgba(255,255,255,0.07); color: var(--white); }
+  .save-btn.danger { background: transparent; color: #e06c6c; border: 1px solid rgba(224,108,108,0.3); }
+  .save-btn.danger:hover { background: rgba(224,108,108,0.1); }
+  .save-btn.reset { background: transparent; color: #c4863a; border: 1px solid rgba(196,134,58,0.3); }
+  .save-btn.reset:hover { background: rgba(196,134,58,0.1); color: #e8a050; }
+  .save-btn.refresh { background: transparent; color: rgba(255,255,255,0.5); border: 1px solid var(--border); }
+  .save-btn.refresh:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+  .save-btn.firm-view { background: rgba(184,148,42,0.1); color: var(--gold); border: 1px solid rgba(184,148,42,0.3); }
+  .save-btn.firm-view:hover { background: rgba(184,148,42,0.2); border-color: var(--gold); }
+  .save-bar-divider { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; margin: 0 2px; }
+  .save-status { font-size: 12px; color: var(--gold); opacity: 0; transition: opacity 0.4s; margin-left: auto; }
+  .client-search-wrap {
+    position: relative; display: flex; align-items: center; flex: 1; max-width: 260px;
+  }
+  .client-search-icon {
+    position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 12px; pointer-events: none;
+  }
+  .client-search-input {
+    background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--white); font-family: 'Jost', sans-serif;
+    font-size: 13px; padding: 7px 10px 7px 28px; outline: none; width: 100%;
+    transition: border-color 0.2s;
+  }
+  .client-search-input:focus { border-color: var(--gold); }
+  .client-search-input::placeholder { color: rgba(255,255,255,0.25); }
+  .client-search-clear {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--text-muted); cursor: pointer;
+    font-size: 14px; padding: 0; line-height: 1; display: none;
+  }
+  .client-search-clear:hover { color: var(--white); }
+  .client-search-dropdown {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    background: var(--navy-mid); border: 1px solid var(--border);
+    border-radius: 8px; z-index: 1000; overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: none; max-height: 220px; overflow-y: auto;
+  }
+  .client-search-dropdown.open { display: block; }
+  .client-search-result {
+    padding: 9px 14px; font-size: 13px; color: var(--text-light);
+    cursor: pointer; transition: background 0.15s; font-family: 'Jost', sans-serif;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .client-search-result:last-child { border-bottom: none; }
+  .client-search-result:hover, .client-search-result.highlighted {
+    background: rgba(184,148,42,0.15); color: var(--white);
+  }
+  .client-search-result mark {
+    background: transparent; color: var(--gold); font-weight: 600;
+  }
+  .client-search-empty {
+    padding: 12px 14px; font-size: 12px; color: var(--text-muted);
+    font-style: italic; text-align: center;
+  }
+  .save-status.visible { opacity: 1; }
+
+  /* ── LAYOUT ── */
+  .container {
+    position: relative; z-index: 1;
+    max-width: 1400px; margin: 0 auto;
+    padding: 40px 48px 80px;
+  }
+
+  .intro-strip { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; gap: 32px; }
+  .intro-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; letter-spacing: 0.02em; line-height: 1.15; }
+  .intro-title span { color: var(--gold); }
+  .intro-desc { max-width: 380px; font-size: 13px; color: var(--text-light); line-height: 1.7; font-weight: 300; }
+
+  /* ── TOTAL CARD ── */
+  .total-card {
+    background: linear-gradient(135deg, var(--navy-light) 0%, var(--navy-mid) 100%);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 32px 40px; margin-bottom: 36px;
+    display: flex; align-items: center; gap: 48px;
+    position: relative; overflow: hidden;
+  }
+  .total-card::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(184,148,42,0.08) 0%, transparent 70%);
+  }
+  .total-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; font-weight: 500; }
+  .total-input-wrap { display: flex; align-items: center; gap: 12px; }
+  .currency-symbol { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; color: var(--gold-light); line-height: 1; }
+  #totalAmount {
+    background: transparent; border: none; border-bottom: 2px solid var(--border);
+    color: var(--white); font-family: 'Cormorant Garamond', serif;
+    font-size: 52px; font-weight: 300; width: 280px; outline: none;
+    padding-bottom: 4px; transition: border-color 0.3s;
+  }
+  #totalAmount:focus { border-bottom-color: var(--gold); }
+  #totalAmount::placeholder { color: rgba(255,255,255,0.2); }
+  .total-divider { width: 1px; height: 60px; background: var(--border); }
+  .allocation-summary { display: flex; gap: 32px; flex: 1; }
+  .alloc-pill { display: flex; flex-direction: column; gap: 4px; }
+  .alloc-pill-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
+  .alloc-pill-value { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; transition: color 0.3s; }
+  .alloc-pill-divider { width: 1px; background: var(--border); align-self: stretch; margin: 0 4px; }
+  .alloc-pill-value.liquidity { color: var(--liquidity); }
+  .alloc-pill-value.lifestyle { color: var(--lifestyle); }
+  .alloc-pill-value.legacy { color: var(--legacy); }
+
+  /* ── SLIDER BAR ── */
+  .alloc-bar-wrap { margin-bottom: 36px; background: var(--navy-light); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; }
+  .alloc-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .alloc-bar-title { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); font-weight: 500; }
+  .alloc-pct-total { font-size: 12px; color: var(--text-muted); }
+  .alloc-pct-total span { font-weight: 500; color: var(--white); }
+  .alloc-pct-total.over span { color: #e05555; }
+  .alloc-pct-total.perfect span { color: var(--legacy); }
+  .bar-track { height: 12px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; display: flex; margin-bottom: 4px; }
+  .bar-pct-labels { display: flex; margin-bottom: 16px; }
+  .bar-pct-label { font-size: 10px; font-weight: 500; letter-spacing: 0.06em; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); overflow: hidden; white-space: nowrap; text-align: center; }
+  .bar-pct-label.liquidity { color: var(--liquidity); }
+  .bar-pct-label.lifestyle { color: var(--lifestyle); }
+  .bar-pct-label.legacy    { color: var(--legacy); }
+  .bar-seg { height: 100%; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .bar-seg.liquidity { background: var(--liquidity); }
+  .bar-seg.lifestyle { background: var(--lifestyle); }
+  .bar-seg.legacy { background: var(--legacy); }
+  .bar-sliders { display: flex; gap: 24px; }
+  .slider-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .slider-top { display: flex; justify-content: space-between; align-items: center; }
+  .slider-bucket-name { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+  .slider-bucket-name.liquidity { color: var(--liquidity); }
+  .slider-bucket-name.lifestyle { color: var(--lifestyle); }
+  .slider-bucket-name.legacy { color: var(--legacy); }
+  .slider-pct-input {
+    background: rgba(255,255,255,0.07); border: 1px solid var(--border-light);
+    border-radius: 6px; color: var(--white); font-family: 'Jost', sans-serif;
+    font-size: 13px; font-weight: 500; width: 64px; padding: 4px 8px;
+    text-align: center; outline: none; transition: border-color 0.2s;
+  }
+  .slider-pct-input:focus { border-color: var(--gold); }
+  .slider-amt-input {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 6px; color: rgba(255,255,255,0.55); font-family: 'Jost', sans-serif;
+    font-size: 12px; padding: 4px 8px; width: 86px; text-align: right; outline: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .slider-amt-input:focus { border-color: var(--gold); color: var(--white); }
+  .slider-amt-sep { font-size: 10px; color: var(--text-muted); margin: 0 2px; }
+  input[type=range] { width: 100%; -webkit-appearance: none; height: 4px; border-radius: 2px; outline: none; cursor: pointer; }
+  .slider-group.liquidity input[type=range] { background: linear-gradient(to right, var(--liquidity) 0%, rgba(255,255,255,0.12) 0%); }
+  .slider-group.lifestyle input[type=range] { background: linear-gradient(to right, var(--lifestyle) 0%, rgba(255,255,255,0.12) 0%); }
+  .slider-group.legacy   input[type=range] { background: linear-gradient(to right, var(--legacy)    0%, rgba(255,255,255,0.12) 0%); }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--white); box-shadow: 0 0 0 3px rgba(255,255,255,0.15), 0 2px 8px rgba(0,0,0,0.4);
+    cursor: pointer; transition: transform 0.15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+  /* ── BUCKETS ── */
+  .buckets-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-bottom: 36px; }
+  .bucket-card { background: var(--navy-mid); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); transition: border-color 0.3s; }
+  .bucket-card:hover { border-color: var(--border); }
+  .bucket-header { padding: 22px 24px 18px; }
+  .bucket-header.liquidity { background: linear-gradient(135deg, rgba(74,144,196,0.25) 0%, rgba(74,144,196,0.05) 100%); border-bottom: 2px solid var(--liquidity); }
+  .bucket-header.lifestyle { background: linear-gradient(135deg, rgba(184,148,42,0.25) 0%, rgba(184,148,42,0.05) 100%); border-bottom: 2px solid var(--lifestyle); }
+  .bucket-header.legacy    { background: linear-gradient(135deg, rgba(107,158,107,0.25) 0%, rgba(107,158,107,0.05) 100%); border-bottom: 2px solid var(--legacy); }
+  .bucket-icon { font-size: 22px; margin-bottom: 8px; }
+  .bucket-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; letter-spacing: 0.02em; margin-bottom: 2px; }
+  .bucket-name.liquidity { color: var(--liquidity); }
+  .bucket-name.lifestyle { color: var(--lifestyle); }
+  .bucket-name.legacy    { color: var(--legacy); }
+  .bucket-purpose { font-size: 11px; color: var(--text-muted); line-height: 1.5; font-weight: 300; }
+
+  .bucket-amounts { padding: 14px 24px; display: flex; gap: 20px; border-bottom: 1px solid var(--border-light); background: rgba(0,0,0,0.15); flex-wrap: wrap; }
+  .bucket-amount-item { display: flex; flex-direction: column; gap: 3px; }
+  .bucket-amount-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
+  .bucket-amount-value { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--white); }
+  .bucket-amount-value.pct { font-size: 15px; color: var(--text-light); }
+
+  /* Bucket allocation progress bar */
+  .bucket-alloc-bar-wrap {
+    padding: 10px 24px 14px; border-bottom: 1px solid var(--border-light);
+    background: rgba(0,0,0,0.12);
+  }
+  .bucket-alloc-row {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
+  }
+  .bucket-alloc-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
+  .bucket-alloc-status {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted); transition: color 0.3s;
+  }
+  .bucket-alloc-status.over  { color: #e05555; }
+  .bucket-alloc-status.full  { color: #4fc3a1; }
+  .bucket-alloc-status.ok    { color: var(--text-muted); }
+  .bucket-alloc-track {
+    width: 100%; height: 6px; border-radius: 3px;
+    background: rgba(255,255,255,0.08); overflow: hidden; position: relative;
+  }
+  .bucket-alloc-fill {
+    height: 100%; border-radius: 3px; width: 0%;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1), background 0.3s;
+    background: rgba(255,255,255,0.3);
+  }
+  .bucket-alloc-fill.full { background: #4fc3a1; }
+  .bucket-alloc-fill.over { background: #e05555; }
+
+  .bucket-horizon { padding: 12px 24px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; gap: 12px; }
+  .horizon-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); width: 80px; flex-shrink: 0; }
+  .horizon-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .horizon-chip {
+    padding: 4px 10px; border-radius: 20px; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
+    color: var(--text-muted); transition: all 0.2s; font-weight: 400; background: transparent;
+  }
+  .horizon-chip:hover { border-color: rgba(255,255,255,0.35); color: var(--white); }
+  .horizon-chip.active.liquidity { background: var(--liquidity); border-color: var(--liquidity); color: white; }
+  .horizon-chip.active.lifestyle { background: var(--lifestyle); border-color: var(--lifestyle); color: white; }
+  .horizon-chip.active.legacy    { background: var(--legacy);    border-color: var(--legacy);    color: white; }
+
+  /* HOLDINGS */
+  .bucket-holdings { padding: 16px 24px 16px; }
+  .holdings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .holdings-title { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
+  .add-holding-btn {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border-light);
+    border-radius: 6px; color: var(--text-muted); font-size: 18px;
+    width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s; font-family: 'Jost', sans-serif; line-height: 1;
+  }
+  .add-holding-btn:hover { background: rgba(255,255,255,0.12); color: var(--white); border-color: var(--gold); }
+  .add-holding-btn.add-holding-bottom {
+    width: 100%; height: 28px; border-radius: 8px; font-size: 16px;
+    color: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.1);
+    letter-spacing: 0.05em;
+  }
+  .add-holding-btn.add-holding-bottom:hover { color: var(--gold); border-color: var(--gold); background: rgba(184,148,42,0.08); }
+  .holdings-list { display: flex; flex-direction: column; gap: 10px; }
+  .holding-empty { text-align: center; padding: 14px 8px; color: var(--text-muted); font-size: 11px; letter-spacing: 0.05em; }
+
+  /* Holding row */
+  .holding-row {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 12px 14px; transition: border-color 0.2s;
+  }
+  .holding-row:hover { border-color: rgba(255,255,255,0.15); }
+  .holding-row-top { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; margin-bottom: 10px; }
+  .holding-row-bottom { display: flex; flex-direction: column; gap: 6px; }
+  .holding-row-line { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; align-items: end; }
+
+  .holding-input {
+    background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.12);
+    color: var(--white); font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 300;
+    outline: none; padding: 2px 0 4px; transition: border-color 0.2s; width: 100%;
+  }
+  .holding-input:focus { border-bottom-color: var(--gold); }
+  .holding-input::placeholder { color: rgba(255,255,255,0.2); font-size: 11px; }
+
+  .holding-field { display: flex; flex-direction: column; gap: 3px; }
+  .holding-field-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .holding-small-input {
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px; color: var(--white); font-family: 'Jost', sans-serif;
+    font-size: 12px; padding: 4px 6px; text-align: center; outline: none; width: 100%;
+    transition: border-color 0.2s;
+  }
+  .holding-small-input:focus { border-color: var(--gold); }
+  .risk-select { cursor: pointer; }
+  .risk-select option { background: var(--navy); }
+
+  .holding-amount-display { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--text-light); padding-bottom: 2px; text-align: center; }
+
+  .remove-holding {
+    background: none; border: none; color: rgba(255,255,255,0.2);
+    cursor: pointer; font-size: 18px; padding: 2px 4px; line-height: 1;
+    transition: color 0.2s; align-self: start;
+  }
+  .remove-holding:hover { color: #e05555; }
+
+  /* OCF / Yield summary strip */
+  .bucket-ocf-summary {
+    padding: 10px 24px; border-top: 1px solid var(--border-light);
+    display: none; gap: 24px; background: rgba(0,0,0,0.12); flex-wrap: wrap;
+  }
+  .ocf-item { display: flex; flex-direction: column; gap: 2px; }
+  .ocf-item-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .ocf-item-value { font-family: 'Cormorant Garamond', serif; font-size: 17px; color: var(--text-light); }
+
+  /* RISK LEVEL (0–5 pips) */
+  .risk-meter { display: flex; align-items: center; gap: 6px; padding: 12px 24px; border-top: 1px solid var(--border-light); }
+  .risk-meter-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-right: 6px; white-space: nowrap; }
+  .risk-pip { width: 22px; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.1); transition: all 0.3s; }
+  .risk-pip.active.p0 { background: rgba(255,255,255,0.25); }
+  .risk-pip.active.p1 { background: #4fc3a1; }
+  .risk-pip.active.p2 { background: #f0c040; }
+  .risk-pip.active.p3 { background: #e88844; }
+  .risk-pip.active.p4 { background: #d95f5f; }
+  .risk-pip.active.p5 { background: #9b2020; }
+  .risk-level-label { margin-left: 10px; font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+  .risk-level-label span { color: var(--white); font-weight: 500; }
+
+  /* SUMMARY */
+  .summary-panel {
+    background: linear-gradient(135deg, var(--navy-light) 0%, var(--navy-mid) 100%);
+    border: 1px solid var(--border); border-radius: 16px; padding: 32px 40px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 28px; align-items: center;
+  }
+  .summary-item { display: flex; flex-direction: column; gap: 6px; }
+  .summary-item-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+  .summary-item-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: var(--white); }
+  .summary-item-sub { font-size: 11px; color: var(--text-muted); }
+  .summary-risk-bar { display: flex; gap: 4px; align-items: center; margin-top: 4px; }
+  .summary-risk-seg { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.08); flex: 1; transition: background 0.4s; }
+  .summary-risk-seg.filled.p0 { background: rgba(255,255,255,0.25); }
+  .summary-risk-seg.filled.p1 { background: #4fc3a1; }
+  .summary-risk-seg.filled.p2 { background: #f0c040; }
+  .summary-risk-seg.filled.p3 { background: #e88844; }
+  .summary-risk-seg.filled.p4 { background: #d95f5f; }
+  .summary-risk-seg.filled.p5 { background: #9b2020; }
+  .summary-donut-wrap { display: flex; justify-content: center; align-items: center; }
+  .donut-svg { transform: rotate(-90deg); }
+
+  .section-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .export-btn.excel { background: #1a6632; border-color: #2d9e52; }
+  .export-btn.excel:hover { background: #217a3d; }
+  .export-btn.appendix-btn { background: rgba(184,148,42,0.08); border-color: rgba(184,148,42,0.3); color: var(--gold); }
+  .export-btn.appendix-btn:hover { background: rgba(184,148,42,0.18); color: var(--gold-light); }
+  .export-btn {
+    background: transparent; border: 1px solid var(--border); border-radius: 8px;
+    color: var(--gold); font-family: 'Jost', sans-serif; font-size: 11px;
+    letter-spacing: 0.15em; text-transform: uppercase; padding: 8px 18px;
+    cursor: pointer; transition: all 0.2s; font-weight: 500;
+  }
+  .export-btn:hover { background: var(--border); color: var(--white); }
+
+  @media (max-width: 1100px) {
+    .buckets-grid { grid-template-columns: 1fr; }
+    .summary-panel { grid-template-columns: 1fr 1fr; }
+    .container { padding: 32px 24px 60px; }
+    header { padding: 20px 24px; flex-wrap: wrap; gap: 16px; }
+  }
+  /* Fully-allocated toast */
+  #allocToast {
+    position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: linear-gradient(135deg, #1a6632, #2d9e52);
+    color: #fff; font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 14px 32px; border-radius: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 9999;
+  }
+  #allocToast.show {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+
+  /* Firm View overlay */
+  #firmViewOverlay {
+    display: none; position: fixed; inset: 0; z-index: 9500;
+    background: var(--navy); overflow-y: auto;
+    font-family: 'Jost', sans-serif;
+  }
+  #firmViewOverlay.open { display: block; }
+  .fv-header {
+    background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+    border-bottom: 1px solid var(--border);
+    padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .fv-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; color: var(--white); letter-spacing: 0.02em; }
+  .fv-subtitle { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+  .fv-close {
+    background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text-muted); font-family: 'Jost', sans-serif;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 7px 16px; cursor: pointer; transition: all 0.2s;
+  }
+  .fv-close:hover { color: var(--white); border-color: rgba(255,255,255,0.4); }
+  .fv-body { padding: 36px 40px; max-width: 1200px; margin: 0 auto; }
+  .fv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .fv-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .fv-card {
+    background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+    border: 1px solid var(--border); border-radius: 14px; padding: 24px;
+  }
+  .fv-card-title {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 16px;
+  }
+  .fv-card-full { grid-column: 1 / -1; }
+  .fv-stat { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 400; color: var(--white); }
+  .fv-stat-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .fv-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+  .fv-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-light); }
+  .fv-legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .fv-stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .fv-mini-stat { padding: 12px; background: rgba(0,0,0,0.15); border-radius: 8px; border: 1px solid var(--border-light); }
+  .fv-mini-val { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--white); }
+  .fv-mini-lbl { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+  .fv-no-data { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
+  @media (max-width: 800px) {
+    .fv-grid, .fv-grid-3 { grid-template-columns: 1fr; }
+    .fv-stat-row { grid-template-columns: 1fr 1fr; }
+    .fv-body { padding: 24px 20px; }
+  }
+
+  /* Allocation warning modal */
+  #allocWarningModal {
+    display: none; position: fixed; inset: 0; z-index: 10000;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  #allocWarningModal.open { display: flex; }
+  .alloc-modal-box {
+    background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 36px 40px; max-width: 480px; width: 90%;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+    animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes modalIn {
+    from { opacity:0; transform: scale(0.9) translateY(16px); }
+    to   { opacity:1; transform: scale(1)   translateY(0); }
+  }
+  .alloc-modal-icon { font-size: 32px; margin-bottom: 12px; }
+  .alloc-modal-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400;
+    color: var(--white); margin-bottom: 8px; letter-spacing: 0.02em;
+  }
+  .alloc-modal-sub {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 20px;
+  }
+  .alloc-modal-issues { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .alloc-modal-issue {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; border-radius: 8px; font-size: 12px;
+  }
+  .alloc-modal-issue.under {
+    background: rgba(184,148,42,0.12); border: 1px solid rgba(184,148,42,0.3);
+  }
+  .alloc-modal-issue.over {
+    background: rgba(224,85,85,0.12); border: 1px solid rgba(224,85,85,0.3);
+  }
+  .alloc-modal-issue-name {
+    font-weight: 500; color: var(--white); letter-spacing: 0.04em; text-transform: uppercase;
+    font-size: 11px;
+  }
+  .alloc-modal-issue-detail { color: var(--text-light); font-size: 12px; text-align: right; }
+  .alloc-modal-issue-detail strong { display: block; font-size: 14px; font-family: 'Cormorant Garamond', serif; font-weight: 400; }
+  .alloc-modal-issue.under .alloc-modal-issue-detail strong { color: var(--gold); }
+  .alloc-modal-issue.over  .alloc-modal-issue-detail strong { color: #e05555; }
+  .alloc-modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+  .alloc-modal-btn {
+    font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase; padding: 9px 20px;
+    border-radius: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid;
+  }
+  .alloc-modal-btn.cancel {
+    background: transparent; border-color: var(--border); color: var(--text-muted);
+  }
+  .alloc-modal-btn.cancel:hover { color: var(--white); border-color: var(--white); }
+  .alloc-modal-btn.proceed {
+    background: var(--navy); border-color: var(--gold); color: var(--gold);
+  }
+  .alloc-modal-btn.proceed:hover { background: rgba(184,148,42,0.15); }
+
+  @media print {
+    .export-btn, .add-holding-btn, .remove-holding { display: none !important; }
+  }
+
+  /* ── APPENDIX OVERLAY ── */
+  #appendixOverlay {
+    display: none; position: fixed; inset: 0; z-index: 9800;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    align-items: flex-start; justify-content: center;
+    padding: 40px 20px; overflow-y: auto;
+  }
+  #appendixOverlay.open { display: flex; }
+  .appendix-doc {
+    background: var(--navy-light); border: 1px solid var(--border);
+    border-radius: 16px; max-width: 780px; width: 100%;
+    padding: 48px 56px; position: relative;
+    font-family: 'Jost', sans-serif; color: var(--text-light);
+    margin: auto;
+  }
+  .appendix-close {
+    position: absolute; top: 20px; right: 24px;
+    background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text-muted); font-family: 'Jost', sans-serif;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 7px 16px; cursor: pointer; transition: all 0.2s;
+  }
+  .appendix-close:hover { color: var(--white); border-color: rgba(255,255,255,0.4); }
+  .appendix-eyebrow {
+    font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--gold); font-weight: 500; margin-bottom: 10px;
+  }
+  .appendix-h1 {
+    font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 400;
+    color: var(--white); margin: 0 0 6px; letter-spacing: 0.02em;
+  }
+  .appendix-intro {
+    font-size: 13px; color: var(--text-muted); margin: 0 0 36px;
+    line-height: 1.7; border-bottom: 1px solid var(--border); padding-bottom: 28px;
+  }
+  .appendix-section { margin-bottom: 36px; }
+  .appendix-section:last-child { margin-bottom: 0; }
+  .appendix-h2 {
+    font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400;
+    color: var(--white); margin: 0 0 4px; display: flex; align-items: center; gap: 10px;
+  }
+  .appendix-h2-tag {
+    font-family: 'Jost', sans-serif; font-size: 9px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text-muted); font-weight: 400;
+  }
+  .appendix-rule { height: 1px; background: var(--border); margin: 10px 0 16px; }
+  .appendix-body { font-size: 13px; line-height: 1.8; color: var(--text-light); }
+  .appendix-body p { margin: 0 0 12px; }
+  .appendix-body p:last-child { margin: 0; }
+  .appendix-formula {
+    background: rgba(0,0,0,0.25); border: 1px solid var(--border);
+    border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin: 14px 0; font-size: 13px;
+    color: var(--white); font-family: 'Courier New', monospace; letter-spacing: 0.02em;
+  }
+  .appendix-formula span { color: var(--gold); }
+  .appendix-table {
+    width: 100%; border-collapse: collapse; font-size: 12px; margin: 14px 0;
+  }
+  .appendix-table th {
+    text-align: left; padding: 8px 12px; font-size: 9px;
+    letter-spacing: 0.18em; text-transform: uppercase; font-weight: 400;
+    color: var(--text-muted); border-bottom: 1px solid var(--border);
+  }
+  .appendix-table td {
+    padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-light); vertical-align: top;
+  }
+  .appendix-table tr:last-child td { border-bottom: none; }
+  .appendix-table td:first-child { color: var(--white); font-weight: 500; }
+  .appendix-note {
+    background: rgba(184,148,42,0.08); border: 1px solid rgba(184,148,42,0.2);
+    border-radius: 8px; padding: 12px 16px; font-size: 12px;
+    color: rgba(184,148,42,0.9); margin-top: 14px; line-height: 1.6;
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #loginOverlay {
+    position: fixed; inset: 0; z-index: 99999;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Jost', sans-serif;
+  }
+  #loginOverlay.hidden { display: none; }
+  .login-box {
+    width: 360px; padding: 48px 40px;
+    background: var(--navy-light); border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex; flex-direction: column; align-items: center; gap: 24px;
+  }
+  .login-logo { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
+  .login-logo img { height: 52px; width: 52px; object-fit: contain; }
+  .login-logo-text h1 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--white); margin: 0; }
+  .login-logo-text p  { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin: 3px 0 0; }
+  .login-tag { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+  .login-divider { width: 100%; height: 1px; background: var(--border); }
+  .login-field { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+  .login-field label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+  .login-field input {
+    width: 100%; box-sizing: border-box;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--white); font-family: 'Jost', sans-serif;
+    font-size: 15px; padding: 11px 14px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .login-field input:focus { border-color: var(--gold); }
+  .login-btn {
+    width: 100%; padding: 13px;
+    background: var(--gold); color: var(--navy);
+    border: none; border-radius: 8px;
+    font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .login-btn:hover { background: var(--gold-light); }
+  .login-error { font-size: 12px; color: #e06c6c; text-align: center; min-height: 16px; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</head>
+<body>
+
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAMgAyADASIAAhEBAxEB/8QAHQABAAICAwEBAAAAAAAAAAAAAAcIBQYBAwkEAv/EAFUQAQABAwIBBwYHDAgCCAcBAAABAgMEBQYRBwgSITFBgRMiMlFhcRQ3cpGhs9IVI0JSVmJ1gpKUscEWFxgkM5Wi0VPCNkNVc6Oy0/AnVGNldJPh8f/EABsBAQADAQEBAQAAAAAAAAAAAAAEBQYDAgEH/8QANxEBAAIBAgQCBwkAAQQDAAAAAAECAwQRBRIhUTFBBhMyM2FxwRQigZGhsdHh8CMVQkPxUmJy/9oADAMBAAIRAxEAPwCAQGmUoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//Z" alt="H&amp;W">
+      <div class="login-logo-text">
+        <h1>Herbert &amp; Webster</h1>
+        <p>Chartered Financial Planners</p>
+      </div>
+    </div>
+    <div class="login-tag">3Ls Investment Planner</div>
+    <div class="login-divider"></div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="Enter password"
+        onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-mark"><img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAMgAyADASIAAhEBAxEB/8QAHQABAAICAwEBAAAAAAAAAAAAAAcIBQYBAwkEAv/EAFUQAQABAwIBBwYHDAgCCAcBAAABAgMEBQYRBwgSITFBgRMiMlFhcRQ3cpGhs9IVI0JSVmJ1gpKUscEWFxgkM5Wi0VPCNkNVc6Oy0/AnVGNldJPh8f/EABsBAQADAQEBAQAAAAAAAAAAAAAEBQYDAgEH/8QANxEBAAIBAgQCBwkAAQQDAAAAAAECAwQRBRIhUTFBBhMyM2FxwRQigZGhsdHh8CMVQkPxUmJy/9oADAMBAAIRAxEAPwCAQGmUoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//Z" alt="Herbert &amp; Webster"></div>
+    <div class="logo-text">
+      <h1>Herbert &amp; Webster</h1>
+      <p>Chartered Financial Planners</p>
+    </div>
+  </div>
+
+  <div class="client-block">
+    <div class="client-label">Clients</div>
+    <div class="client-rows">
+      <div class="client-row">
+        <span class="client-row-tag c1">Client 1</span>
+        <select class="client-prefix-select" id="clientPrefix">
+          <option>Mr</option>
+          <option>Mrs</option>
+          <option selected>Mr</option>
+          <option>Ms</option>
+          <option>Dr</option>
+        </select>
+        <input type="text" class="client-name-input" id="clientName" data-api-field="clientName" placeholder="Full Name" autocomplete="off" oninput="updateOwnerDropdowns()">
+      </div>
+      <div class="client-row">
+        <span class="client-row-tag c2">Client 2</span>
+        <select class="client-prefix-select" id="clientPrefix2">
+          <option>Mr</option>
+          <option selected>Mrs</option>
+          <option>Ms</option>
+          <option>Dr</option>
+        </select>
+        <input type="text" class="client-name-input" id="clientName2" data-api-field="clientName2" placeholder="Full Name (optional)" autocomplete="off" oninput="updateOwnerDropdowns()">
+      </div>
+    </div>
+  </div>
+
+  <div class="header-right-block">
+    <div class="header-meta-row">
+      <div class="header-meta-field">
+        <label class="header-meta-label">Adviser</label>
+        <select class="header-meta-select" id="adviserName">
+          <option value="">— Select —</option>
+          <option value="Selena Hills">Selena Hills</option>
+          <option value="Adam Herbert">Adam Herbert</option>
+        </select>
+      </div>
+      <div class="header-meta-field">
+        <label class="header-meta-label">Date</label>
+        <input type="date" class="header-meta-date" id="planDate">
+      </div>
+    </div>
+    <span class="header-tag">3Ls Investment Planner</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="intro-strip">
+    <div>
+      <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;font-weight:500;">Investment Methodology</div>
+      <h2 class="intro-title">Investing with <span>Purpose</span><br><em style="font-style:italic;font-size:0.8em;color:var(--text-light)">Liquidity · Lifestyle · Legacy</em></h2>
+    </div>
+    <p class="intro-desc">Allocate your portfolio across the three pillars of the Herbert &amp; Webster investment framework. Each bucket serves a distinct purpose — immediate security, sustained lifestyle, and long-term wealth creation.</p>
+  </div>
+
+  <!-- SAVE / LOAD BAR -->
+  <div class="save-bar">
+    <span class="save-bar-label">Client Records</span>
+    <select class="save-client-select" id="clientRecordSelect" onchange="loadSelectedClient()" style="display:none">
+      <option value="">— Load saved client —</option>
+    </select>
+    <div class="client-search-wrap" id="clientSearchWrap">
+      <span class="client-search-icon">🔍</span>
+      <input class="client-search-input" id="clientSearchInput" type="text"
+        placeholder="Search saved clients…"
+        autocomplete="off"
+        oninput="onClientSearch(this.value)"
+        onkeydown="onClientSearchKey(event)"
+        onfocus="openClientSearch()"
+      >
+      <button class="client-search-clear" id="clientSearchClear" onclick="clearClientSearch()">×</button>
+      <div class="client-search-dropdown" id="clientSearchDropdown"></div>
+    </div>
+    <button class="save-btn" onclick="saveCurrentClient()">💾 Save</button>
+    <button class="save-btn secondary" onclick="newClientRecord()">+ New</button>
+    <button class="save-btn danger" onclick="deleteCurrentClient()">Delete</button>
+    <button class="save-btn reset" onclick="resetCurrentClient()">↺ Reset</button>
+    <div class="save-bar-divider"></div>
+    <button class="save-btn refresh" onclick="refreshCalc()">⟳ Re-Run</button>
+    <button class="save-btn firm-view" onclick="openFirmView()">&#9783; Firm View</button>
+    <span class="save-status" id="saveStatus">Saved ✓</span>
+  </div>
+
+  <!-- TOTAL -->
+  <div class="total-card">
+    <div>
+      <div class="total-label">Total Portfolio Value</div>
+      <div class="total-input-wrap">
+        <span class="currency-symbol">£</span>
+        <input type="text" id="totalAmount" data-api-field="totalAmount" placeholder="500,000" autocomplete="off">
+      </div>
+    </div>
+    <div class="total-divider"></div>
+    <div class="allocation-summary">
+      <div class="alloc-pill"><span class="alloc-pill-label">Liquidity</span><span class="alloc-pill-value liquidity" id="summaryLiquidityAmt">£0</span></div>
+      <div class="alloc-pill"><span class="alloc-pill-label">Lifestyle</span><span class="alloc-pill-value lifestyle" id="summaryLifestyleAmt">£0</span></div>
+      <div class="alloc-pill"><span class="alloc-pill-label">Legacy</span><span class="alloc-pill-value legacy" id="summaryLegacyAmt">£0</span></div>
+      <div class="alloc-pill-divider"></div>
+      <div class="alloc-pill">
+        <span class="alloc-pill-label">Unallocated</span>
+        <span class="alloc-pill-value" id="summaryUnallocatedPill" style="color:var(--gold)">£0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDERS -->
+  <div class="alloc-bar-wrap">
+    <div class="alloc-bar-header">
+      <span class="alloc-bar-title">Portfolio Allocation</span>
+      <span class="alloc-pct-total" id="pctTotalLabel">Total: <span id="pctTotalVal">70%</span></span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-seg liquidity" id="barLiquidity" style="width:20%"></div>
+      <div class="bar-seg lifestyle" id="barLifestyle" style="width:50%"></div>
+      <div class="bar-seg legacy"    id="barLegacy"    style="width:30%"></div>
+    </div>
+    <div class="bar-pct-labels" id="barPctLabels">
+      <span class="bar-pct-label liquidity" id="barPctLiquidity">20%</span>
+      <span class="bar-pct-label lifestyle" id="barPctLifestyle">50%</span>
+      <span class="bar-pct-label legacy" id="barPctLegacy">30%</span>
+    </div>
+    <div class="bar-sliders">
+      <div class="slider-group liquidity">
+        <div class="slider-top"><span class="slider-bucket-name liquidity">💧 Liquidity</span><input type="number" class="slider-pct-input" id="pctLiquidity" min="0" max="100" value="20"><span class="slider-amt-sep">= £</span><input type="text" class="slider-amt-input" id="amtLiquidityInput" placeholder="0" inputmode="numeric"></div>
+        <input type="range" id="rangeLiquidity" min="0" max="100" value="20" step="1">
+      </div>
+      <div class="slider-group lifestyle">
+        <div class="slider-top"><span class="slider-bucket-name lifestyle">🏡 Lifestyle</span><input type="number" class="slider-pct-input" id="pctLifestyle" min="0" max="100" value="50"><span class="slider-amt-sep">= £</span><input type="text" class="slider-amt-input" id="amtLifestyleInput" placeholder="0" inputmode="numeric"></div>
+        <input type="range" id="rangeLifestyle" min="0" max="100" value="50" step="1">
+      </div>
+      <div class="slider-group legacy">
+        <div class="slider-top"><span class="slider-bucket-name legacy">🌳 Legacy</span><input type="number" class="slider-pct-input" id="pctLegacy" min="0" max="100" value="30"><span class="slider-amt-sep">= £</span><input type="text" class="slider-amt-input" id="amtLegacyInput" placeholder="0" inputmode="numeric"></div>
+        <input type="range" id="rangeLegacy" min="0" max="100" value="30" step="1">
+      </div>
+    </div>
+  </div>
+
+  <!-- BUCKETS -->
+  <div class="buckets-grid" id="bucketsGrid"></div>
+
+  <!-- SUMMARY -->
+  <div class="summary-panel">
+    <div class="summary-item">
+      <span class="summary-item-label">Total Portfolio</span>
+      <span class="summary-item-value" id="summaryTotal">£0</span>
+      <span class="summary-item-sub" id="summaryAllocated">—</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-item-label">Portfolio Risk Level</span>
+      <span class="summary-item-value" id="summaryRisk">—</span>
+      <div class="summary-risk-bar">
+        <div class="summary-risk-seg" id="sr0"></div>
+        <div class="summary-risk-seg" id="sr1"></div>
+        <div class="summary-risk-seg" id="sr2"></div>
+        <div class="summary-risk-seg" id="sr3"></div>
+        <div class="summary-risk-seg" id="sr4"></div>
+        <div class="summary-risk-seg" id="sr5"></div>
+      </div>
+    </div>
+    <div class="summary-item">
+      <span class="summary-item-label">Unallocated</span>
+      <span class="summary-item-value" id="summaryUnallocated" style="color:var(--gold)">£0</span>
+      <span class="summary-item-sub" id="summaryPctUsed">70% allocated</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-item-label">Total OCF</span>
+      <span class="summary-item-value" id="summaryOcfGbp" style="color:var(--white)">£—</span>
+      <span class="summary-item-sub" id="summaryOcfPct" style="color:var(--gold)">— % of portfolio</span>
+    </div>
+    <div class="summary-donut-wrap">
+      <svg class="donut-svg" width="90" height="90" viewBox="0 0 90 90">
+        <circle cx="45" cy="45" r="34" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+        <circle cx="45" cy="45" r="34" fill="none" stroke="var(--liquidity)" stroke-width="10" stroke-dasharray="0 214" id="donutLiquidity" style="transition:stroke-dasharray 0.5s cubic-bezier(0.4,0,0.2,1)"/>
+        <circle cx="45" cy="45" r="34" fill="none" stroke="var(--lifestyle)" stroke-width="10" stroke-dasharray="0 214" id="donutLifestyle" style="transition:stroke-dasharray 0.5s cubic-bezier(0.4,0,0.2,1) 0.05s"/>
+        <circle cx="45" cy="45" r="34" fill="none" stroke="var(--legacy)"    stroke-width="10" stroke-dasharray="0 214" id="donutLegacy"    style="transition:stroke-dasharray 0.5s cubic-bezier(0.4,0,0.2,1) 0.1s"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section-actions">
+    <button class="export-btn appendix-btn" onclick="openAppendix()">📋 Appendix</button>
+    <button class="export-btn" onclick="window.print()">⎙ Print Summary</button>
+    <button class="export-btn excel" onclick="exportExcel()">⬇ Export to Excel</button>
+  </div>
+</div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────────────
+const state = {
+  total: 0,
+  pcts: { liquidity: 20, lifestyle: 50, legacy: 30 },
+  horizons: { liquidity: '1–3 yrs', lifestyle: '5–10 yrs', legacy: '15+ yrs' },
+  holdings: { liquidity: [], lifestyle: [], legacy: [] }
+};
+
+const CIRC = 2 * Math.PI * 34; // ≈ 213.6
+let hid = 0;
+
+// ── BUCKET CONFIG ────────────────────────────────────────────────────────
+const BUCKETS = [
+  {
+    key: 'liquidity', icon: '💧', label: 'Liquidity', cls: 'liquidity',
+    purpose: 'Emergency needs & planned lump-sum expenditures. The foundation of financial security.',
+    horizons: [['0–1 yr',''], ['1–3 yrs','active'], ['3–5 yrs','']],
+    defaultHorizon: '1–3 yrs'
+  },
+  {
+    key: 'lifestyle', icon: '🏡', label: 'Lifestyle', cls: 'lifestyle',
+    purpose: 'Sustaining your desired standard of living through consistent income streams.',
+    horizons: [['3–5 yrs',''], ['5–10 yrs','active'], ['10+ yrs','']],
+    defaultHorizon: '5–10 yrs'
+  },
+  {
+    key: 'legacy', icon: '🌳', label: 'Legacy', cls: 'legacy',
+    purpose: 'Long-term wealth growth, intergenerational transfer & IHT planning.',
+    horizons: [['10+ yrs',''], ['15+ yrs','active'], ['20+ yrs',''], ['Generational','']],
+    defaultHorizon: '15+ yrs'
+  }
+];
+
+// ── OWNER HELPERS ────────────────────────────────────────────────────────
+function getClientLabels() {
+  const n1 = document.getElementById('clientName').value.trim();
+  const p1 = document.getElementById('clientPrefix').value;
+  const n2 = document.getElementById('clientName2').value.trim();
+  const p2 = document.getElementById('clientPrefix2').value;
+  return {
+    c1: n1 ? p1 + ' ' + n1 : 'Client 1',
+    c2: n2 ? p2 + ' ' + n2 : null,
+    hasC2: !!n2
+  };
+}
+
+function buildOwnerOptions(selected) {
+  const {c1, c2, hasC2} = getClientLabels();
+  const opts = [
+    ['joint', 'Joint'],
+    ['c1', c1],
+    ...(hasC2 ? [['c2', c2]] : [])
+  ];
+  return opts.map(([v,l]) => `<option value="${v}" ${(selected||'joint')===v?'selected':''}>${l}</option>`).join('');
+}
+
+function updateOwnerDropdowns() {
+  const {c1, c2, hasC2} = getClientLabels();
+  document.querySelectorAll('.owner-select').forEach(sel => {
+    const current = sel.value;
+    const opts = [['joint','Joint'],['c1',c1],...(hasC2?[['c2',c2]]:[])];
+    sel.innerHTML = opts.map(([v,l]) => `<option value="${v}" ${current===v?'selected':''}>${l}</option>`).join('');
+  });
+}
+
+// ── BUILD BUCKET HTML ────────────────────────────────────────────────────
+function buildBuckets() {
+  const grid = document.getElementById('bucketsGrid');
+  grid.innerHTML = '';
+  BUCKETS.forEach(b => {
+    const chipHTML = b.horizons.map(([lbl, active]) =>
+      `<button class="horizon-chip ${b.cls} ${active}" onclick="setHorizon('${b.key}','${lbl}',this)">${lbl}</button>`
+    ).join('');
+
+    const riskPips = [0,1,2,3,4,5].map(i =>
+      `<div class="risk-pip p${i}" id="r${cap(b.key)}${i}"></div>`
+    ).join('');
+
+    grid.insertAdjacentHTML('beforeend', `
+      <div class="bucket-card">
+        <div class="bucket-header ${b.cls}">
+            <div class="bucket-name ${b.cls}">${b.label}</div>
+          <div class="bucket-purpose">${b.purpose}</div>
+        </div>
+        <div class="bucket-amounts">
+          <div class="bucket-amount-item">
+            <span class="bucket-amount-label">Allocated</span>
+            <span class="bucket-amount-value" id="amt${cap(b.key)}">£0</span>
+          </div>
+          <div class="bucket-amount-item">
+            <span class="bucket-amount-label">Share</span>
+            <span class="bucket-amount-value pct" id="pctDisplay${cap(b.key)}">0%</span>
+          </div>
+          <div class="bucket-amount-item">
+            <span class="bucket-amount-label">Horizon</span>
+            <span class="bucket-amount-value pct" id="horizon${cap(b.key)}Display" style="font-size:13px;">${b.defaultHorizon}</span>
+          </div>
+        </div>
+        <div class="bucket-alloc-bar-wrap">
+          <div class="bucket-alloc-row">
+            <span class="bucket-alloc-label">Holdings allocated</span>
+            <span class="bucket-alloc-status" id="allocStatus${cap(b.key)}">— remaining</span>
+          </div>
+          <div class="bucket-alloc-track">
+            <div class="bucket-alloc-fill" id="allocFill${cap(b.key)}"></div>
+          </div>
+        </div>
+        <div class="bucket-horizon">
+          <span class="horizon-label">Horizon</span>
+          <div class="horizon-chips">${chipHTML}</div>
+        </div>
+        <div class="bucket-holdings">
+          <div class="holdings-header">
+            <span class="holdings-title">Holdings / Funds</span>
+            <button class="add-holding-btn" onclick="addHolding('${b.key}')">+</button>
+          </div>
+          <div class="holdings-list" id="holdings${cap(b.key)}">
+            <div class="holding-empty">No holdings added yet</div>
+          </div>
+          <div style="display:flex;justify-content:center;margin-top:10px;">
+            <button class="add-holding-btn add-holding-bottom" onclick="addHolding('${b.key}')" title="Add holding">+</button>
+          </div>
+        </div>
+        <div class="bucket-ocf-summary" id="ocfSummary${cap(b.key)}">
+          <div class="ocf-item"><span class="ocf-item-label">Wtd. OCF</span><span class="ocf-item-value" id="ocfTotal${cap(b.key)}">—</span></div>
+          <div class="ocf-item"><span class="ocf-item-label">Wtd. Yield</span><span class="ocf-item-value" id="yieldTotal${cap(b.key)}">—</span></div>
+          <div class="ocf-item"><span class="ocf-item-label">OCF £</span><span class="ocf-item-value" id="ocfAmt${cap(b.key)}">—</span></div>
+          <div class="ocf-item"><span class="ocf-item-label">Yield £</span><span class="ocf-item-value" id="yieldAmt${cap(b.key)}">—</span></div>
+        </div>
+        <div class="risk-meter">
+          <span class="risk-meter-label">Risk Level</span>
+          ${riskPips}
+          <span class="risk-level-label">Score: <span id="riskAvg${cap(b.key)}">—</span></span>
+        </div>
+      </div>
+    `);
+  });
+}
+
+// ── UTILS ────────────────────────────────────────────────────────────────
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function fmt(n) { return '£' + Math.round(n || 0).toLocaleString('en-GB'); }
+function fmtPct(v) { const n = parseFloat(v); return isNaN(n) ? '—' : n.toFixed(2) + '%'; }
+function parseAmt(str) { return parseFloat((str+'').replace(/[£,\s]/g,'')) || 0; }
+
+// ── MAIN UPDATE ──────────────────────────────────────────────────────────
+function update() {
+  state.total = parseAmt(document.getElementById('totalAmount').value);
+  const { liquidity, lifestyle, legacy } = state.pcts;
+  const totalPct = liquidity + lifestyle + legacy;
+
+  // Bar segments
+  document.getElementById('barLiquidity').style.width = Math.min(liquidity,100) + '%';
+  document.getElementById('barLifestyle').style.width = Math.min(lifestyle,100) + '%';
+  document.getElementById('barLegacy').style.width    = Math.min(legacy,100)    + '%';
+
+  // Pct total label
+  const lbl = document.getElementById('pctTotalLabel');
+  document.getElementById('pctTotalVal').textContent = totalPct + '%';
+  lbl.className = 'alloc-pct-total' + (totalPct > 100 ? ' over' : totalPct === 100 ? ' perfect' : '');
+
+  // Sync sliders
+  ['liquidity','lifestyle','legacy'].forEach(b => {
+    document.getElementById('range'+cap(b)).value = state.pcts[b];
+    updateSliderBg(b);
+  });
+
+  const amounts = {
+    liquidity: state.total * liquidity / 100,
+    lifestyle: state.total * lifestyle / 100,
+    legacy:    state.total * legacy    / 100
+  };
+
+  ['liquidity','lifestyle','legacy'].forEach(b => {
+    document.getElementById('amt'+cap(b)).textContent       = fmt(amounts[b]);
+    document.getElementById('pctDisplay'+cap(b)).textContent = state.pcts[b] + '%';
+    document.getElementById('summary'+cap(b)+'Amt').textContent = fmt(amounts[b]);
+    updateHoldingAmounts(b, amounts[b]);
+    updateRiskMeter(b);
+    updateOCF(b, amounts[b]);
+  });
+
+  // Summary panel
+  document.getElementById('summaryTotal').textContent = fmt(state.total);
+  const unalloc = state.total * (100 - totalPct) / 100;
+  document.getElementById('summaryUnallocated').textContent = fmt(Math.max(0, unalloc));
+  const pillEl = document.getElementById('summaryUnallocatedPill');
+  if (pillEl) {
+    pillEl.textContent = fmt(Math.max(0, unalloc));
+    pillEl.style.color = unalloc <= 0 ? 'var(--legacy)' : 'var(--gold)';
+  }
+  document.getElementById('summaryPctUsed').textContent = totalPct + '% allocated';
+
+  const aEl = document.getElementById('summaryAllocated');
+  if (totalPct > 100)       { aEl.textContent = '⚠ Over-allocated by '+(totalPct-100)+'%'; aEl.style.color='#e05555'; }
+  else if (totalPct === 100){ aEl.textContent = '✓ Fully allocated'; aEl.style.color='var(--legacy)'; }
+  else                      { aEl.textContent = (100-totalPct)+'% remaining'; aEl.style.color='var(--text-muted)'; }
+
+  updateDonut(liquidity, lifestyle, legacy);
+  updatePortfolioRisk();
+  updateSummaryOCF();
+  ['liquidity','lifestyle','legacy'].forEach(b => updateBucketAllocBar(b, amounts[b]));
+  ['Liquidity','Lifestyle','Legacy'].forEach(b => updateAmtInput(b));
+  // Update bar % labels
+  ['liquidity','lifestyle','legacy'].forEach(bk => {
+    const pct = state.pcts[bk] || 0;
+    const el  = document.getElementById('barPct' + bk.charAt(0).toUpperCase() + bk.slice(1));
+    if (el) { el.style.width = pct + '%'; el.textContent = pct > 3 ? pct.toFixed(0) + '%' : ''; }
+  });
+}
+
+function updateBucketAllocBar(bucket, bucketTotal) {
+  const hs = state.holdings[bucket] || [];
+  const fillEl   = document.getElementById('allocFill'   + cap(bucket));
+  const statusEl = document.getElementById('allocStatus' + cap(bucket));
+  if (!fillEl || !statusEl) return;
+
+  // Sum holding % of bucket
+  const usedPct = hs.reduce((sum, h) => sum + (parseFloat(h.pct) || 0), 0);
+  const barPct  = Math.min(usedPct, 100);
+  const remainPct = 100 - usedPct;
+  const remainAmt = bucketTotal * remainPct / 100;
+
+  fillEl.style.width = barPct + '%';
+  const isFull = Math.abs(usedPct - 100) < 0.05;
+  fillEl.className   = 'bucket-alloc-fill' + (usedPct > 100 && !isFull ? ' over' : isFull ? ' full' : '');
+
+  if (hs.length === 0 || bucketTotal === 0) {
+    statusEl.textContent = '—';
+    statusEl.className   = 'bucket-alloc-status ok';
+  } else if (Math.abs(usedPct - 100) < 0.05) {
+    statusEl.textContent = '✓ Fully allocated';
+    statusEl.className   = 'bucket-alloc-status full';
+  } else if (usedPct > 100) {
+    const overPct = (usedPct - 100).toFixed(1);
+    statusEl.textContent = '⚠ Over by ' + overPct + '%';
+    statusEl.className   = 'bucket-alloc-status over';
+  } else {
+    statusEl.textContent = fmt(Math.max(0, remainAmt)) + ' remaining (' + remainPct.toFixed(1) + '%)';
+    statusEl.className   = 'bucket-alloc-status ok';
+  }
+}
+
+function updateSummaryOCF() {
+  // Methodology from original spreadsheet:
+  // OCF £ per holding = (holding £ value) * OCF% / 100
+  // holding £ value   = bucket total * (holding % of bucket) / 100
+  // Total OCF £       = sum of all holding OCF £ across all buckets
+  // Total OCF %       = (Total OCF £ / Total Portfolio £) * 100
+  const total = state.total || 0;
+  let totalOcfGbp = 0;
+
+  ['liquidity','lifestyle','legacy'].forEach(bk => {
+    const bucketAmt = total * (state.pcts[bk] || 0) / 100;
+    (state.holdings[bk] || []).forEach(h => {
+      const holdingAmt = bucketAmt * (parseFloat(h.pct) || 0) / 100;
+      const ocfPct     = parseFloat(h.ocf) || 0;
+      totalOcfGbp     += holdingAmt * ocfPct / 100;
+    });
+  });
+
+  const ocfEl    = document.getElementById('summaryOcfGbp');
+  const ocfPctEl = document.getElementById('summaryOcfPct');
+
+  if (total > 0 && totalOcfGbp > 0) {
+    const pctOfPortfolio = (totalOcfGbp / total) * 100;
+    ocfEl.textContent    = fmt(totalOcfGbp);
+    ocfPctEl.textContent = fmtPct(pctOfPortfolio) + ' of portfolio';
+  } else {
+    ocfEl.textContent    = '£—';
+    ocfPctEl.textContent = '— % of portfolio';
+  }
+}
+
+function updateSliderBg(bucket) {
+  const slider = document.getElementById('range'+cap(bucket));
+  const val    = state.pcts[bucket];
+  const c = { liquidity:'var(--liquidity)', lifestyle:'var(--lifestyle)', legacy:'var(--legacy)' };
+  slider.style.background = `linear-gradient(to right, ${c[bucket]} ${val}%, rgba(255,255,255,0.12) ${val}%)`;
+}
+
+// ── DONUT ────────────────────────────────────────────────────────────────
+function updateDonut(liq, lif, leg) {
+  const parts = [
+    {id:'donutLiquidity', pct:liq},
+    {id:'donutLifestyle', pct:lif},
+    {id:'donutLegacy',    pct:leg}
+  ];
+  let offset = 0;
+  const total = liq+lif+leg;
+  parts.forEach(p => {
+    const dash = total ? Math.min(p.pct/100,1)*CIRC : 0;
+    document.getElementById(p.id).setAttribute('stroke-dasharray', `${dash} ${CIRC-dash}`);
+    document.getElementById(p.id).setAttribute('stroke-dashoffset', -offset);
+    offset += dash;
+  });
+}
+
+// ── HORIZON ──────────────────────────────────────────────────────────────
+function setHorizon(bucket, value, btn) {
+  state.horizons[bucket] = value;
+  btn.parentElement.querySelectorAll('.horizon-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('horizon'+cap(bucket)+'Display').textContent = value;
+}
+
+// ── HOLDINGS ─────────────────────────────────────────────────────────────
+function addHolding(bucket) {
+  state.holdings[bucket].push({ id:++hid, fund:'', wrapper:'', planRef:'', risk:3, pct:'', ocf:'', yield_:'', owner:'joint', val:'' });
+  renderHoldings(bucket);
+}
+
+function removeHolding(bucket, id) {
+  state.holdings[bucket] = state.holdings[bucket].filter(h => h.id !== id);
+  renderHoldings(bucket);
+  update();
+}
+
+function renderHoldings(bucket) {
+  const el = document.getElementById('holdings'+cap(bucket));
+  const hs = state.holdings[bucket];
+  if (hs.length === 0) { el.innerHTML = '<div class="holding-empty">No holdings added yet</div>'; update(); return; }
+
+  el.innerHTML = '';
+  hs.forEach(h => {
+    const row = document.createElement('div');
+    row.className = 'holding-row';
+    row.innerHTML = `
+      <div class="holding-row-top">
+        <div style="width:100%">
+          <div class="holding-field" style="margin-bottom:8px;">
+            <span class="holding-field-label">Fund / Investment</span>
+            <input class="holding-input" type="text" placeholder="Fund / Investment name" value="${h.fund}"
+              id="holding_${h.id}_fund" data-api-field="fund" data-api-holding="${h.id}" data-api-bucket="${bucket}"
+              onchange="updateHolding('${bucket}',${h.id},'fund',this.value)">
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;align-items:end;">
+            <div class="holding-field">
+              <span class="holding-field-label">Wrapper</span>
+              <input class="holding-input" type="text" placeholder="ISA · Pension · GIA · Bond…" value="${h.wrapper}"
+                id="holding_${h.id}_wrapper" data-api-field="wrapper" data-api-holding="${h.id}" data-api-bucket="${bucket}"
+                onchange="updateHolding('${bucket}',${h.id},'wrapper',this.value)">
+            </div>
+            <div class="holding-field">
+              <span class="holding-field-label">Plan Ref</span>
+              <input class="holding-input" type="text" placeholder="CRM ref…"
+                id="holding_${h.id}_planRef" data-api-field="planRef" data-api-holding="${h.id}" data-api-bucket="${bucket}"
+                value="${h.planRef||''}"
+                onchange="updateHolding('${bucket}',${h.id},'planRef',this.value)">
+            </div>
+          </div>
+        </div>
+        <button class="remove-holding" onclick="removeHolding('${bucket}',${h.id})" title="Remove">×</button>
+      </div>
+      <div class="holding-row-bottom">
+        <div class="holding-row-line">
+          <div class="holding-field">
+            <span class="holding-field-label">Owner</span>
+            <select class="holding-small-input owner-select" onchange="updateHolding('${bucket}',${h.id},'owner',this.value)">
+              ${buildOwnerOptions(h.owner)}
+            </select>
+          </div>
+          <div class="holding-field">
+            <span class="holding-field-label">Value £</span>
+            <input class="holding-small-input" type="number" min="0" step="1" placeholder="0"
+              value="${h.val||''}" id="holdingValInput_${h.id}"
+              oninput="updateHoldingFromValue('${bucket}',${h.id},this.value)">
+          </div>
+          <div class="holding-field">
+            <span class="holding-field-label">% of Bucket</span>
+            <input class="holding-small-input" type="number" min="0" max="100" step="0.01" placeholder="%"
+              value="${h.pct||''}" id="holdingPctInput_${h.id}"
+              oninput="updateHoldingFromPct('${bucket}',${h.id},this.value)">
+          </div>
+        </div>
+        <div class="holding-row-line">
+          <div class="holding-field">
+            <span class="holding-field-label">Risk (0–5)</span>
+            <select class="holding-small-input risk-select" onchange="updateHolding('${bucket}',${h.id},'risk',+this.value)">
+              ${[0,1,2,3,4,5].map(n=>`<option value="${n}" ${h.risk===n?'selected':''}>${n}</option>`).join('')}
+            </select>
+          </div>
+          <div class="holding-field">
+            <span class="holding-field-label">OCF %</span>
+            <input class="holding-small-input" type="number" min="0" step="0.01" placeholder="0.00"
+              value="${h.ocf}" onchange="updateHolding('${bucket}',${h.id},'ocf',this.value)">
+          </div>
+          <div class="holding-field">
+            <span class="holding-field-label">Yield %</span>
+            <input class="holding-small-input" type="number" min="0" step="0.01" placeholder="0.00"
+              value="${h.yield_}" onchange="updateHolding('${bucket}',${h.id},'yield_',this.value)">
+          </div>
+        </div>
+      </div>
+    `;
+    el.appendChild(row);
+  });
+  update();
+}
+
+function updateHolding(bucket, id, field, value) {
+  const h = state.holdings[bucket].find(x => x.id === id);
+  if (h) { h[field] = (field === 'risk') ? +value : value; update(); }
+}
+
+function updateHoldingFromValue(bucket, id, rawVal) {
+  const h = state.holdings[bucket].find(x => x.id === id);
+  if (!h) return;
+  h.val = rawVal;
+  const val       = parseFloat(rawVal) || 0;
+  const bucketAmt = state.total * (state.pcts[bucket] || 0) / 100;
+  if (bucketAmt > 0 && val > 0) {
+    h.pct = parseFloat((val / bucketAmt * 100).toFixed(4));
+    const pctEl = document.getElementById('holdingPctInput_' + id);
+    if (pctEl && document.activeElement !== pctEl) pctEl.value = parseFloat(h.pct.toFixed(2));
+  } else {
+    h.pct = '';
+    const pctEl = document.getElementById('holdingPctInput_' + id);
+    if (pctEl) pctEl.value = '';
+  }
+  update();
+}
+
+function updateHoldingFromPct(bucket, id, rawVal) {
+  const h = state.holdings[bucket].find(x => x.id === id);
+  if (!h) return;
+  h.pct = rawVal;
+  const pct       = parseFloat(rawVal) || 0;
+  const bucketAmt = state.total * (state.pcts[bucket] || 0) / 100;
+  if (bucketAmt > 0 && pct > 0) {
+    h.val = parseFloat((bucketAmt * pct / 100).toFixed(2));
+    const valEl = document.getElementById('holdingValInput_' + id);
+    if (valEl && document.activeElement !== valEl) valEl.value = Math.round(h.val);
+  } else {
+    h.val = '';
+    const valEl = document.getElementById('holdingValInput_' + id);
+    if (valEl) valEl.value = '';
+  }
+  update();
+}
+
+function updateHoldingAmounts(bucket, bucketTotal) {
+  // £ values are left exactly as entered — we do NOT overwrite them.
+  // However, we DO back-calculate h.pct from h.val against the new bucket
+  // total so that the allocation bar (and OCF/risk weighted calcs) stay correct.
+  state.holdings[bucket].forEach(h => {
+    const val = parseFloat(h.val) || 0;
+    if (val > 0 && bucketTotal > 0) {
+      h.pct = parseFloat((val / bucketTotal * 100).toFixed(4));
+    }
+    const pctEl = document.getElementById('holdingPctInput_' + h.id);
+    if (pctEl && document.activeElement !== pctEl) {
+      pctEl.value = h.pct ? parseFloat(parseFloat(h.pct).toFixed(2)) : '';
+    }
+  });
+}
+
+// ── OCF & YIELD ──────────────────────────────────────────────────────────
+function updateOCF(bucket, bucketTotal) {
+  const hs  = state.holdings[bucket];
+  const strip = document.getElementById('ocfSummary'+cap(bucket));
+  if (hs.length === 0) { strip.style.display = 'none'; return; }
+  strip.style.display = 'flex';
+
+  let totalW=0, wtdOCF=0, wtdYield=0;
+  hs.forEach(h => {
+    const w = parseFloat(h.pct)   || 0;
+    const o = parseFloat(h.ocf)   || 0;
+    const y = parseFloat(h.yield_)|| 0;
+    totalW   += w;
+    wtdOCF   += w * o;
+    wtdYield += w * y;
+  });
+
+  const wOCF   = totalW > 0 ? wtdOCF   / totalW : null;
+  const wYield = totalW > 0 ? wtdYield / totalW : null;
+
+  const p = cap(bucket);
+  document.getElementById('ocfTotal'+p).textContent   = wOCF   !== null ? fmtPct(wOCF)   : '—';
+  document.getElementById('yieldTotal'+p).textContent = wYield !== null ? fmtPct(wYield) : '—';
+  document.getElementById('ocfAmt'+p).textContent     = wOCF   !== null ? fmt(bucketTotal * wOCF   / 100) : '—';
+  document.getElementById('yieldAmt'+p).textContent   = wYield !== null ? fmt(bucketTotal * wYield / 100) : '—';
+}
+
+// ── RISK METER ───────────────────────────────────────────────────────────
+const rPfx = { liquidity:'rLiquidity', lifestyle:'rLifestyle', legacy:'rLegacy' };
+
+function updateRiskMeter(bucket) {
+  const hs     = state.holdings[bucket];
+  const prefix = rPfx[bucket];
+  const avgEl  = document.getElementById('riskAvg'+cap(bucket));
+  for (let i=0;i<=5;i++) { const e=document.getElementById(prefix+i); if(e) e.className=`risk-pip p${i}`; }
+  if (hs.length === 0) { avgEl.textContent='—'; return; }
+
+  let totalW=0, wtdR=0;
+  hs.forEach(h => { const w=parseFloat(h.pct)||1; totalW+=w; wtdR+=w*h.risk; });
+  const avg     = totalW > 0 ? wtdR/totalW : 0;
+  const rounded = Math.round(avg);
+  for (let i=0;i<=rounded;i++) { const e=document.getElementById(prefix+i); if(e) e.classList.add('active'); }
+  avgEl.textContent = avg.toFixed(2);
+}
+
+function updatePortfolioRisk() {
+  const all = [...state.holdings.liquidity,...state.holdings.lifestyle,...state.holdings.legacy];
+  const el  = document.getElementById('summaryRisk');
+  for (let i=0;i<=5;i++) { const s=document.getElementById('sr'+i); if(s) s.className='summary-risk-seg'; }
+  if (all.length===0) { el.textContent='—'; return; }
+
+  let totalW=0, wtdR=0;
+  all.forEach(h => { const w=parseFloat(h.pct)||1; totalW+=w; wtdR+=w*h.risk; });
+  const avg     = totalW>0 ? wtdR/totalW : 0;
+  const rounded = Math.round(avg);
+  el.textContent = avg.toFixed(2);
+  for (let i=0;i<=rounded;i++) { const s=document.getElementById('sr'+i); if(s) s.className=`summary-risk-seg filled p${rounded}`; }
+}
+
+// ── SLIDERS & INPUTS ─────────────────────────────────────────────────────
+['Liquidity','Lifestyle','Legacy'].forEach(b => {
+  const bucket = b.toLowerCase();
+  const slider = document.getElementById('range'+b);
+  const num    = document.getElementById('pct'+b);
+  const amtInp = document.getElementById('amt'+b+'Input');
+  slider.addEventListener('input', () => { state.pcts[bucket]=+slider.value; num.value=slider.value; update(); });
+  num.addEventListener('input', () => {
+    state.pcts[bucket]=Math.max(0,Math.min(100,+num.value||0));
+    slider.value=Math.round(state.pcts[bucket]); update();
+  });
+  amtInp.addEventListener('input', () => {
+    const raw = amtInp.value.replace(/[^0-9.]/g,'');
+    const v   = parseFloat(raw) || 0;
+    if (state.total > 0) {
+      state.pcts[bucket] = parseFloat(Math.min(100, v / state.total * 100).toFixed(4));
+      num.value    = parseFloat(state.pcts[bucket].toFixed(2));
+      slider.value = Math.round(state.pcts[bucket]);
+      update();
+    }
+  });
+  amtInp.addEventListener('blur', () => {
+    const v = state.total * (state.pcts[bucket]||0) / 100;
+    if (document.activeElement !== amtInp)
+      amtInp.value = v > 0 ? Math.round(v).toLocaleString('en-GB') : '';
+  });
+  amtInp.addEventListener('focus', () => {
+    const v = state.total * (state.pcts[bucket]||0) / 100;
+    amtInp.value = v > 0 ? Math.round(v) : '';
+  });
+});
+
+function updateAmtInput(b) {
+  const inp = document.getElementById('amt'+b+'Input');
+  if (!inp || document.activeElement === inp) return;
+  const bk = b.toLowerCase();
+  const v  = state.total * (state.pcts[bk]||0) / 100;
+  inp.value = v > 0 ? Math.round(v).toLocaleString('en-GB') : '';
+}
+
+// ── TOTAL AMOUNT ─────────────────────────────────────────────────────────
+const totalInput = document.getElementById('totalAmount');
+totalInput.addEventListener('input', () => { state.total=parseAmt(totalInput.value); update(); });
+totalInput.addEventListener('blur',  () => { if(state.total>0) totalInput.value=state.total.toLocaleString('en-GB'); });
+totalInput.addEventListener('focus', () => { totalInput.value=state.total||''; });
+
+// ── INIT ─────────────────────────────────────────────────────────────────
+buildBuckets();
+update();
+
+// Set today as default date
+document.getElementById('planDate').value = new Date().toISOString().slice(0,10);
+
+// ── SAVE / LOAD SYSTEM ───────────────────────────────────────────────────
+const STORAGE_KEY = 'hw3ls_clients';
+
+function getAllClients() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveAllClients(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+function getClientKey() {
+  const p1 = document.getElementById('clientPrefix').value;
+  const n1 = document.getElementById('clientName').value.trim();
+  const p2 = document.getElementById('clientPrefix2').value;
+  const n2 = document.getElementById('clientName2').value.trim();
+  if (!n1) return '';
+  return n2 ? (p1+' '+n1+' & '+p2+' '+n2) : (p1+' '+n1);
+}
+
+function refreshDropdown(selectKey) {
+  // Keep hidden select in sync (used internally by load/save logic)
+  const sel = document.getElementById('clientRecordSelect');
+  const clients = getAllClients();
+  sel.innerHTML = '<option value="">— Load saved client —</option>';
+  Object.keys(clients).sort().forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k; opt.textContent = k;
+    if (k === selectKey) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  // Update search input to show selected name
+  const inp = document.getElementById('clientSearchInput');
+  if (inp) inp.value = selectKey || '';
+  const clr = document.getElementById('clientSearchClear');
+  if (clr) clr.style.display = selectKey ? 'block' : 'none';
+}
+
+let _searchHighlight = -1;
+
+function openClientSearch() {
+  onClientSearch(document.getElementById('clientSearchInput').value);
+}
+
+function onClientSearch(query) {
+  const clients = getAllClients();
+  const keys = Object.keys(clients).sort();
+  const q = query.trim().toLowerCase();
+  const filtered = q ? keys.filter(k => k.toLowerCase().includes(q)) : keys;
+  const dropdown = document.getElementById('clientSearchDropdown');
+  const clr = document.getElementById('clientSearchClear');
+  clr.style.display = query.length > 0 ? 'block' : 'none';
+  _searchHighlight = -1;
+
+  if (keys.length === 0) {
+    dropdown.innerHTML = '<div class="client-search-empty">No saved clients yet</div>';
+  } else if (filtered.length === 0) {
+    dropdown.innerHTML = '<div class="client-search-empty">No matches found</div>';
+  } else {
+    dropdown.innerHTML = filtered.map((k, i) => {
+      const escaped = k.replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+      const highlighted = q
+        ? escaped.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'), m => `<mark>${m}</mark>`)
+        : escaped;
+      return `<div class="client-search-result" data-key="${escaped}" onmousedown="selectClientFromSearch('${escaped}')">${highlighted}</div>`;
+    }).join('');
+  }
+  dropdown.classList.add('open');
+}
+
+function selectClientFromSearch(key) {
+  const sel = document.getElementById('clientRecordSelect');
+  sel.value = key;
+  document.getElementById('clientSearchInput').value = key;
+  document.getElementById('clientSearchClear').style.display = 'block';
+  document.getElementById('clientSearchDropdown').classList.remove('open');
+  loadSelectedClient();
+}
+
+function clearClientSearch() {
+  document.getElementById('clientSearchInput').value = '';
+  document.getElementById('clientSearchClear').style.display = 'none';
+  document.getElementById('clientSearchDropdown').classList.remove('open');
+  document.getElementById('clientRecordSelect').value = '';
+}
+
+function onClientSearchKey(e) {
+  const dropdown = document.getElementById('clientSearchDropdown');
+  const items = dropdown.querySelectorAll('.client-search-result');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    _searchHighlight = Math.min(_searchHighlight + 1, items.length - 1);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    _searchHighlight = Math.max(_searchHighlight - 1, 0);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (_searchHighlight >= 0 && items[_searchHighlight]) {
+      selectClientFromSearch(items[_searchHighlight].dataset.key);
+    }
+    return;
+  } else if (e.key === 'Escape') {
+    dropdown.classList.remove('open');
+    return;
+  }
+  items.forEach((el, i) => el.classList.toggle('highlighted', i === _searchHighlight));
+  if (items[_searchHighlight]) items[_searchHighlight].scrollIntoView({block:'nearest'});
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('clientSearchWrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('clientSearchDropdown').classList.remove('open');
+  }
+});
+
+function saveCurrentClient() {
+  const key = getClientKey();
+  if (!key) { alert('Please enter a client name before saving.'); return; }
+  checkBucketAllocation(() => _doSaveCurrentClient());
+}
+function _doSaveCurrentClient() {
+  const key = getClientKey();
+  const clients = getAllClients();
+  clients[key] = {
+    clientPrefix:  document.getElementById('clientPrefix').value,
+    clientName:    document.getElementById('clientName').value,
+    clientPrefix2: document.getElementById('clientPrefix2').value,
+    clientName2:   document.getElementById('clientName2').value,
+    adviserName:  document.getElementById('adviserName').value,
+    planDate:     document.getElementById('planDate').value,
+    state: JSON.parse(JSON.stringify(state))
+  };
+  saveAllClients(clients);
+  refreshDropdown(key);
+  const status = document.getElementById('saveStatus');
+  status.textContent = 'Saved ✓';
+  status.classList.add('visible');
+  setTimeout(() => status.classList.remove('visible'), 2500);
+}
+
+function loadSelectedClient() {
+  const key = document.getElementById('clientRecordSelect').value;
+  if (!key) return;
+  const clients = getAllClients();
+  const rec = clients[key];
+  if (!rec) return;
+  document.getElementById('clientPrefix').value  = rec.clientPrefix  || 'Mr';
+  document.getElementById('clientName').value    = rec.clientName    || '';
+  document.getElementById('clientPrefix2').value = rec.clientPrefix2 || 'Mrs';
+  document.getElementById('clientName2').value   = rec.clientName2   || '';
+  document.getElementById('adviserName').value  = rec.adviserName  || '';
+  document.getElementById('planDate').value     = rec.planDate     || '';
+  const s = rec.state;
+  state.total    = s.total;
+  state.pcts     = { ...s.pcts };
+  state.horizons = { ...s.horizons };
+  state.holdings = {
+    liquidity: (s.holdings.liquidity || []).map(h=>({...h})),
+    lifestyle:  (s.holdings.lifestyle  || []).map(h=>({...h})),
+    legacy:    (s.holdings.legacy    || []).map(h=>({...h}))
+  };
+  hid = Math.max(0, ...[
+    ...state.holdings.liquidity,
+    ...state.holdings.lifestyle,
+    ...state.holdings.legacy
+  ].map(h=>h.id||0));
+  document.getElementById('totalAmount').value = state.total ? state.total.toLocaleString('en-GB') : '';
+  ['Liquidity','Lifestyle','Legacy'].forEach(b => {
+    const bk = b.toLowerCase();
+    document.getElementById('pct'+b).value   = state.pcts[bk];
+    document.getElementById('range'+b).value = state.pcts[bk];
+  });
+  buildBuckets();
+  ['liquidity','lifestyle','legacy'].forEach(b => renderHoldings(b));
+  update();
+}
+
+function newClientRecord() {
+  document.getElementById('clientName').value    = '';
+  document.getElementById('clientPrefix').value  = 'Mr';
+  document.getElementById('clientName2').value   = '';
+  document.getElementById('clientPrefix2').value = 'Mrs';
+  document.getElementById('adviserName').value  = '';
+  document.getElementById('planDate').value     = new Date().toISOString().slice(0,10);
+  document.getElementById('clientRecordSelect').value = '';
+  // Clear search field for privacy
+  const _si = document.getElementById('clientSearchInput');
+  if (_si) { _si.value = ''; }
+  const _sc = document.getElementById('clientSearchClear');
+  if (_sc) _sc.style.display = 'none';
+  const _sd = document.getElementById('clientSearchDropdown');
+  if (_sd) _sd.classList.remove('open');
+  state.total = 0;
+  state.pcts  = { liquidity:20, lifestyle:50, legacy:30 };
+  state.horizons = { liquidity:'1–3 yrs', lifestyle:'5–10 yrs', legacy:'15+ yrs' };
+  state.holdings = { liquidity:[], lifestyle:[], legacy:[] };
+  hid = 0;
+  document.getElementById('totalAmount').value = '';
+  ['Liquidity','Lifestyle','Legacy'].forEach(b => { const el=document.getElementById('amt'+b+'Input'); if(el) el.value=''; });
+  ['Liquidity','Lifestyle','Legacy'].forEach(b => {
+    const bk = b.toLowerCase();
+    document.getElementById('pct'+b).value   = state.pcts[bk];
+    document.getElementById('range'+b).value = state.pcts[bk];
+  });
+  buildBuckets();
+  update();
+}
+
+function deleteCurrentClient() {
+  const key = document.getElementById('clientRecordSelect').value;
+  if (!key) { alert('No saved client selected.'); return; }
+  if (!confirm('Delete record for "' + key + '"? This cannot be undone.')) return;
+  const clients = getAllClients();
+  delete clients[key];
+  saveAllClients(clients);
+  refreshDropdown('');
+  newClientRecord();
+}
+
+function resetCurrentClient() {
+  const key = document.getElementById('clientRecordSelect').value;
+  const msg = key
+    ? 'Reset all holdings and allocations for "' + key + '"? Client details will be kept but all funds and values will be cleared.'
+    : 'Reset all holdings and allocations? This will clear all funds and values.';
+  if (!confirm(msg)) return;
+  // Keep client identity fields, reset everything else
+  state.total    = 0;
+  state.pcts     = { liquidity:20, lifestyle:50, legacy:30 };
+  state.horizons = { liquidity:'1–3 yrs', lifestyle:'5–10 yrs', legacy:'15+ yrs' };
+  state.holdings = { liquidity:[], lifestyle:[], legacy:[] };
+  hid = 0;
+  document.getElementById('totalAmount').value = '';
+  ['Liquidity','Lifestyle','Legacy'].forEach(b => {
+    const bk = b.toLowerCase();
+    document.getElementById('pct'+b).value   = state.pcts[bk];
+    document.getElementById('range'+b).value = state.pcts[bk];
+  });
+  buildBuckets();
+  update();
+  const statusEl = document.getElementById('saveStatus');
+  statusEl.textContent = 'Reset ✓';
+  setTimeout(() => statusEl.textContent = '', 2000);
+}
+
+
+// ── ALLOCATION WARNING MODAL ─────────────────────────────────────────
+let _allocModalCallback = null;
+
+function checkBucketAllocation(proceedCallback) {
+  const total = state.total || 0;
+  const bucketDefs = [
+    { key:'liquidity', label:'Liquidity' },
+    { key:'lifestyle', label:'Lifestyle' },
+    { key:'legacy',    label:'Legacy'    }
+  ];
+  const issues = [];
+  bucketDefs.forEach(({key, label}) => {
+    const hs = state.holdings[key] || [];
+    if (hs.length === 0) return;
+    const usedPct = hs.reduce((s, h) => s + (parseFloat(h.pct) || 0), 0);
+    const bucketAmt = total * (state.pcts[key] || 0) / 100;
+    if (Math.abs(usedPct - 100) < 0.05) return;
+    if (usedPct > 100) {
+      const overPct = (usedPct - 100).toFixed(1);
+      const overAmt = bucketAmt * (usedPct - 100) / 100;
+      issues.push({ label, type:'over', pct: overPct, amt: overAmt });
+    } else {
+      const remPct = (100 - usedPct).toFixed(1);
+      const remAmt = bucketAmt * (100 - usedPct) / 100;
+      issues.push({ label, type:'under', pct: remPct, amt: remAmt });
+    }
+  });
+  if (issues.length === 0) { proceedCallback(); return; }
+  const overCount  = issues.filter(i => i.type==='over').length;
+  const underCount = issues.filter(i => i.type==='under').length;
+  let title = overCount && underCount ? 'Allocation Issues' :
+              overCount ? 'Over-allocated' : 'Unallocated Funds Remaining';
+  let sub = overCount && underCount
+    ? overCount + ' bucket' + (overCount>1?'s':'')+' over · '+underCount+' bucket'+(underCount>1?'s':'')+' under-allocated'
+    : overCount
+      ? overCount + ' bucket'+(overCount>1?'s are':' is')+' over its allocation'
+      : underCount + ' bucket'+(underCount>1?'s have':' has')+' unallocated funds';
+  document.getElementById('allocModalTitle').textContent = title;
+  document.getElementById('allocModalSub').textContent   = sub;
+  const issuesEl = document.getElementById('allocModalIssues');
+  issuesEl.innerHTML = issues.map(issue => `
+    <div class="alloc-modal-issue ${issue.type}">
+      <span class="alloc-modal-issue-name">${issue.label}</span>
+      <span class="alloc-modal-issue-detail">
+        ${issue.type === 'over'
+          ? '<strong>+' + issue.pct + '% over</strong>' + fmt(issue.amt) + ' excess'
+          : '<strong>' + fmt(issue.amt) + ' remaining</strong>' + issue.pct + '% unallocated'}
+      </span>
+    </div>`).join('');
+  _allocModalCallback = proceedCallback;
+  document.getElementById('allocModalProceedBtn').onclick = () => { closeAllocModal(); proceedCallback(); };
+  document.getElementById('allocWarningModal').classList.add('open');
+}
+
+function closeAllocModal() {
+  document.getElementById('allocWarningModal').classList.remove('open');
+  _allocModalCallback = null;
+}
+
+document.getElementById('allocWarningModal').addEventListener('click', function(e) {
+  if (e.target === this) closeAllocModal();
+});
+
+refreshDropdown('');
+
+// ── LOGIN ──────────────────────────────────────────────────────────
+function doLogin() {
+  const pw  = document.getElementById('loginPassword').value;
+  const err = document.getElementById('loginError');
+  if (pw === 'F1nanc3') {
+    document.getElementById('loginOverlay').classList.add('hidden');
+    err.textContent = '';
+  } else {
+    err.textContent = 'Incorrect password. Please try again.';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginPassword').focus();
+  }
+}
+
+// ── EXCEL EXPORT ─────────────────────────────────────────────────────────
+function exportExcel() {
+  checkBucketAllocation(() => _doExportExcel());
+}
+function _doExportExcel() {
+  const wb = XLSX.utils.book_new();
+  const _p1=document.getElementById('clientPrefix').value, _n1=document.getElementById('clientName').value||'Unknown';
+  const _p2=document.getElementById('clientPrefix2').value, _n2=document.getElementById('clientName2').value;
+  const clientStr = _n2 ? (_p1+' '+_n1+' & '+_p2+' '+_n2) : (_p1+' '+_n1);
+  const adviserStr = document.getElementById('adviserName').value  || '—';
+  const dateStr    = document.getElementById('planDate').value      || '—';
+  const total      = state.total || 0;
+
+  const NAV='1A2A4A', GOLD='B8942A', WHT='FFFFFF';
+  const BLU='4A90C4', LSTY='B8942A', LEG='6B9E6B';
+  const LGT='F0F2F5', MID='D8DCE3';
+
+  function s(fill,fontCol,bold,sz,align,fmt,useGaramond) {
+    return { fill:{patternType:'solid',fgColor:{rgb:fill||'FFFFFF'}},
+             font:{color:{rgb:fontCol||'1A2A4A'},bold:!!bold,sz:sz||10,name:useGaramond?'Garamond':'Arial'},
+             alignment:{horizontal:align||'left',vertical:'center',wrapText:true},
+             numFmt:fmt||'@',
+             border:{top:{style:'thin',color:{rgb:MID}},bottom:{style:'thin',color:{rgb:MID}},
+                     left:{style:'thin',color:{rgb:MID}},right:{style:'thin',color:{rgb:MID}}} };
+  }
+  // Header cells: always navy bg, white text, Garamond font
+  function H(v,bg,fc,sz) {
+    return {v,t:'s',s:s(bg||NAV,fc||WHT,true,sz||11,'center','@',true)};
+  }
+  function C(v,bold,align,bg,fc,fmt) {
+    return {v,t:typeof v==='number'?'n':'s',s:s(bg,fc,bold,10,align||'left',fmt||(typeof v==='number'?'#,##0.00':'@'))};
+  }
+  function P(v,bg) { return {v:v!=null&&v!==''?v/100:0,t:'n',s:s(bg,null,false,10,'right','0.00%')}; }
+  function G(v,bg,bold) { return {v:v||0,t:'n',s:s(bg,null,bold,10,'right','£#,##0.00')}; }
+
+  function bucketSheet(key,label,colHex) {
+    const bt = total*(state.pcts[key]||0)/100;
+    const hs = state.holdings[key]||[];
+    const rows = [];
+    rows.push([H(label+' Bucket — '+clientStr,colHex,WHT,13)]);
+    rows.push([H('Adviser: '+adviserStr+'   |   Date: '+dateStr+'   |   Allocated: '+fmt(bt)+'   |   Horizon: '+(state.horizons[key]||'—'),colHex,WHT,10)]);
+    rows.push([]);
+    rows.push([H('Fund / Investment'),H('Wrapper'),H('Plan Ref'),H('Owner'),H('Risk (0–5)'),H('% of Bucket'),H('OCF %'),H('Yield %'),H('Value (£)')]);
+    if (!hs.length) {
+      rows.push([C('No holdings added',false,'center',LGT)]);
+    } else {
+      hs.forEach((h,i)=>{
+        const bg=i%2?LGT:'FFFFFF';
+        const pct=parseFloat(h.pct)||0;
+        const {c1:lc1,c2:lc2}=getClientLabels();
+        const ownerLabel = h.owner==='c1'?lc1:h.owner==='c2'?(lc2||'Client 2'):'Joint';
+        const dispVal = pct ? bt*pct/100 : (parseFloat(h.val)||0);
+        rows.push([C(h.fund||'—',false,'left',bg),C(h.wrapper||'—',false,'center',bg),
+          C(h.planRef||'—',false,'center',bg),C(ownerLabel,false,'center',bg),
+          C(h.risk!=null?h.risk:'—',false,'center',bg),P(pct,bg),
+          P(parseFloat(h.ocf)||0,bg),P(parseFloat(h.yield_)||0,bg),G(dispVal,bg)]);
+      });
+      let tW=0,oW=0,yW=0,rW=0,vW=0;
+      hs.forEach(h=>{const pct=parseFloat(h.pct)||0;const hv=pct?bt*pct/100:(parseFloat(h.val)||0);vW+=hv;tW+=pct;oW+=pct*(parseFloat(h.ocf)||0);yW+=pct*(parseFloat(h.yield_)||0);rW+=hv*(h.risk||0);});
+      rows.push([H('WEIGHTED TOTALS',LGT,NAV,10),C('',false,'left',LGT),C('',false,'left',LGT),C('',false,'left',LGT),
+        C(vW>0?parseFloat((rW/vW).toFixed(2)):'—',true,'center',LGT,NAV),
+        P(tW,LGT),P(tW>0?oW/tW:0,LGT),P(tW>0?yW/tW:0,LGT),G(bt,LGT,true)]);
+    }
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:34},{wch:16},{wch:14},{wch:14},{wch:10},{wch:13},{wch:10},{wch:10},{wch:14}];
+    ws['!rows']=[{hpt:28},{hpt:20},{hpt:6},{hpt:20}];
+    ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:7}},{s:{r:1,c:0},e:{r:1,c:7}}];
+    return ws;
+  }
+
+  // Summary sheet
+  const rows=[];
+  rows.push([H('Herbert & Webster — 3Ls Investment Summary',NAV,WHT,14)]);
+  rows.push([H('Client: '+clientStr+'   |   Adviser: '+adviserStr+'   |   Date: '+dateStr,NAV,WHT,10)]);
+  rows.push([]);
+  rows.push([H('Portfolio Overview',LGT,NAV,11),{v:'',s:s('FFFFFF')},H('Bucket Allocation',LGT,NAV,11)]);
+  rows.push([C('Total Portfolio Value',true,'left',LGT,NAV),G(total,LGT,true),
+    C('Bucket',true,'center',LGT,NAV),C('% Alloc',true,'center',LGT,NAV),C('Value (£)',true,'center',LGT,NAV),C('Horizon',true,'center',LGT,NAV)]);
+  const bkMap={liquidity:{l:'Liquidity',c:BLU},lifestyle:{l:'Lifestyle',c:LSTY},legacy:{l:'Legacy',c:LEG}};
+  ['liquidity','lifestyle','legacy'].forEach((bk,i)=>{
+    const bg=i%2?LGT:'FFFFFF';
+    const v=total*(state.pcts[bk]||0)/100;
+    rows.push([C(bkMap[bk].l,true,'left',bg,bkMap[bk].c),G(v,bg,true),
+      C(bkMap[bk].l,false,'center',bg,bkMap[bk].c),
+      P(state.pcts[bk]||0,bg),G(v,bg),C(state.horizons[bk]||'—',false,'center',bg)]);
+  });
+  const allH=[...state.holdings.liquidity,...state.holdings.lifestyle,...state.holdings.legacy];
+  let tW=0,tR=0;
+  ['liquidity','lifestyle','legacy'].forEach(bk=>{const ba=total*(state.pcts[bk]||0)/100;(state.holdings[bk]||[]).forEach(h=>{const pct=parseFloat(h.pct)||0;const w=pct?ba*pct/100:(parseFloat(h.val)||0);tW+=w;tR+=w*(h.risk||0);});});
+  // Total OCF for Excel summary (same formula as updateSummaryOCF)
+  let xlsOcfGbp=0;
+  ['liquidity','lifestyle','legacy'].forEach(bk=>{
+    const ba=total*(state.pcts[bk]||0)/100;
+    (state.holdings[bk]||[]).forEach(h=>{
+      xlsOcfGbp+=ba*(parseFloat(h.pct)||0)/100*(parseFloat(h.ocf)||0)/100;
+    });
+  });
+  const xlsOcfPct=total>0?xlsOcfGbp/total*100:null;
+
+  rows.push([]);
+  rows.push([C('Portfolio Risk Score (0–5)',true,'left',LGT,NAV),C(tW>0?parseFloat((tR/tW).toFixed(2)):'—',true,'center',LGT,NAV)]);
+  rows.push([C('Total OCF (£)',true,'left',LGT,NAV),G(xlsOcfGbp,LGT,true),C('Total OCF %',true,'left',LGT,NAV),P(xlsOcfPct||0,LGT)]);
+
+  const sumWS=XLSX.utils.aoa_to_sheet(rows);
+  sumWS['!cols']=[{wch:28},{wch:16},{wch:14},{wch:12},{wch:16},{wch:14}];
+  sumWS['!rows']=[{hpt:28},{hpt:18},{hpt:6},{hpt:18},{hpt:18}];
+  sumWS['!merges']=[{s:{r:0,c:0},e:{r:0,c:5}},{s:{r:1,c:0},e:{r:1,c:5}},
+    {s:{r:3,c:0},e:{r:3,c:1}},{s:{r:3,c:2},e:{r:3,c:5}}];
+
+  XLSX.utils.book_append_sheet(wb, sumWS, 'Summary');
+
+  // ── Combined "3Ls Mapping" sheet ──────────────────────────────────────
+  const combinedRows = [];
+  combinedRows.push([H('Herbert & Webster — 3Ls Investment Mapping',NAV,WHT,14)]);
+  combinedRows.push([H('Client: '+clientStr+'   |   Adviser: '+adviserStr+'   |   Date: '+dateStr,NAV,WHT,10)]);
+  combinedRows.push([]);
+
+  const COLS = 12; // Fund, Wrapper, Plan Ref, Owner, Risk, Amount, % of Portfolio, OCF%, OCF-£, Yield%, Yield-£, (notes)
+  const bucketDefs = [
+    {key:'liquidity', label:'Liquidity', col:BLU},
+    {key:'lifestyle', label:'Lifestyle', col:LSTY},
+    {key:'legacy',    label:'Legacy',    col:LEG},
+  ];
+  const merges = [
+    {s:{r:0,c:0},e:{r:0,c:COLS-1}},
+    {s:{r:1,c:0},e:{r:1,c:COLS-1}},
+  ];
+  let curRow = 3; // 0-indexed, after the 3 header rows above
+
+  bucketDefs.forEach(({key, label, col}) => {
+    const bt = total*(state.pcts[key]||0)/100;
+    const hs = state.holdings[key]||[];
+    const {c1:lc1,c2:lc2} = getClientLabels();
+
+    // Section header: "Liquidity  £123,456"
+    const secLabel = label + '  ' + fmt(bt);
+    combinedRows.push([
+      H(secLabel, col, WHT, 11),
+      ...Array(COLS-1).fill({v:'',s:{fill:{patternType:'solid',fgColor:{rgb:col}},font:{color:{rgb:WHT}},border:{top:{style:'thin',color:{rgb:MID}},bottom:{style:'thin',color:{rgb:MID}},left:{style:'thin',color:{rgb:MID}},right:{style:'thin',color:{rgb:MID}}}}})
+    ]);
+    merges.push({s:{r:curRow,c:0},e:{r:curRow,c:COLS-1}});
+    curRow++;
+
+    // Column headers
+    combinedRows.push([
+      H('Fund / Investment',NAV,WHT,10), H('Wrapper',NAV,WHT,10), H('Plan Ref',NAV,WHT,10), H('Owner',NAV,WHT,10),
+      H('Risk',NAV,WHT,10), H('Amount (£)',NAV,WHT,10), H('% of Portfolio',NAV,WHT,10),
+      H('OCF %',NAV,WHT,10), H('OCF £',NAV,WHT,10),
+      H('Yield %',NAV,WHT,10), H('Yield £',NAV,WHT,10), H('',NAV,WHT,10)
+    ]);
+    curRow++;
+
+    if (!hs.length) {
+      combinedRows.push([C('No holdings added',false,'center',LGT),...Array(COLS-1).fill({v:'',s:s(LGT)})]);
+      curRow++;
+    } else {
+      hs.forEach((h,i) => {
+        const bg = i%2 ? LGT : 'FFFFFF';
+        const pct = parseFloat(h.pct)||0;
+        const ownerLabel = h.owner==='c1'?lc1:h.owner==='c2'?(lc2||'Client 2'):'Joint';
+        const holdingAmt = pct ? bt*pct/100 : (parseFloat(h.val)||0);
+        const ocfPct = parseFloat(h.ocf)||0;
+        const yldPct = parseFloat(h.yield_)||0;
+        const ocfGbp = holdingAmt * ocfPct / 100;
+        const yldGbp = holdingAmt * yldPct / 100;
+        const pctOfPortfolio = total>0 ? holdingAmt/total*100 : 0;
+        combinedRows.push([
+          C(h.fund||'—',false,'left',bg),
+          C(h.wrapper||'—',false,'center',bg),
+          C(h.planRef||'—',false,'center',bg),
+          C(ownerLabel,false,'center',bg),
+          C(h.risk!=null?h.risk:'—',false,'center',bg),
+          G(holdingAmt,bg),
+          P(pctOfPortfolio,bg),
+          P(ocfPct,bg),
+          G(ocfGbp,bg),
+          P(yldPct,bg),
+          G(yldGbp,bg),
+          {v:'',s:s(bg)}
+        ]);
+        curRow++;
+      });
+    }
+    combinedRows.push(Array(COLS).fill({v:'',s:s('FFFFFF')})); // spacer
+    curRow++;
+  });
+
+  // Grand totals row
+  const allHs = [...state.holdings.liquidity,...state.holdings.lifestyle,...state.holdings.legacy];
+  let gt_amt=0, gt_ocfG=0, gt_yldG=0, gt_W=0, gt_R=0;
+  ['liquidity','lifestyle','legacy'].forEach(bk=>{
+    const ba=total*(state.pcts[bk]||0)/100;
+    (state.holdings[bk]||[]).forEach(h=>{
+      const pct=parseFloat(h.pct)||0;
+      const ha=pct?ba*pct/100:(parseFloat(h.val)||0);
+      gt_amt+=ha;
+      gt_ocfG+=ha*(parseFloat(h.ocf)||0)/100;
+      gt_yldG+=ha*(parseFloat(h.yield_)||0)/100;
+      const ha_w=pct?ba*pct/100:(parseFloat(h.val)||0); gt_W+=ha_w; gt_R+=ha_w*(h.risk||0);
+    });
+  });
+  combinedRows.push([
+    H('TOTAL',NAV,WHT,11),
+    {v:'',s:s(NAV)},{v:'',s:s(NAV)},{v:'',s:s(NAV)},
+    H(gt_W>0?parseFloat((gt_R/gt_W).toFixed(2)):'—',NAV,WHT,10),
+    {v:gt_amt,t:'n',s:s(NAV,WHT,true,10,'right','£#,##0.00')},
+    P(total>0?gt_amt/total*100:0,NAV),
+    P(total>0?gt_ocfG/gt_amt*100:0,NAV),
+    {v:gt_ocfG,t:'n',s:s(NAV,WHT,true,10,'right','£#,##0.00')},
+    P(total>0?gt_yldG/gt_amt*100:0,NAV),
+    {v:gt_yldG,t:'n',s:s(NAV,WHT,true,10,'right','£#,##0.00')},
+    {v:'',s:s(NAV)}
+  ]);
+
+  const combWS = XLSX.utils.aoa_to_sheet(combinedRows);
+  combWS['!cols'] = [{wch:32},{wch:14},{wch:14},{wch:14},{wch:8},{wch:14},{wch:14},{wch:8},{wch:12},{wch:8},{wch:12},{wch:6}];
+  combWS['!rows'] = [{hpt:28},{hpt:18},{hpt:6}];
+  combWS['!merges'] = merges;
+  XLSX.utils.book_append_sheet(wb, combWS, '3Ls Mapping');
+
+  XLSX.utils.book_append_sheet(wb, bucketSheet('liquidity','Liquidity',BLU), 'Liquidity');
+  XLSX.utils.book_append_sheet(wb, bucketSheet('lifestyle','Lifestyle',LSTY), 'Lifestyle');
+  XLSX.utils.book_append_sheet(wb, bucketSheet('legacy','Legacy',LEG), 'Legacy');
+
+  const slug=(document.getElementById('clientName').value||'Client').replace(/\s+/g,'_');
+  XLSX.writeFile(wb,'HW_3Ls_'+slug+'_'+dateStr+'.xlsx');
+}
+</script>
+  <div id="allocToast">✓ Fully Allocated</div>
+
+  <!-- Firm View Overlay -->
+  <div id="firmViewOverlay">
+    <div class="fv-header">
+      <div>
+        <div class="fv-title">Firm View</div>
+        <div class="fv-subtitle" id="fvSubtitle">Portfolio overview</div>
+      </div>
+      <button class="fv-close" onclick="closeFirmView()">✕ Close</button>
+    </div>
+    <div class="fv-body" id="fvBody">
+      <div class="fv-no-data">Loading…</div>
+    </div>
+  </div>
+
+  <!-- Allocation warning modal -->
+  <!-- Appendix Overlay -->
+  <div id="appendixOverlay">
+    <div class="appendix-doc">
+      <button class="appendix-close" onclick="closeAppendix()">✕ Close</button>
+      <div class="appendix-eyebrow">Herbert &amp; Webster — 3Ls Investment Planner</div>
+      <h1 class="appendix-h1">Calculation Methodology</h1>
+      <p class="appendix-intro">This appendix documents every calculation performed by the 3Ls Investment Planner — how values are derived, how weighted averages are constructed, and how the data is presented in the summary panel, bucket cards, and Excel export.</p>
+
+      <!-- 1. Bucket Allocations -->
+      <div class="appendix-section">
+        <div class="appendix-h2">1. Bucket Allocations <span class="appendix-h2-tag">Liquidity · Lifestyle · Legacy</span></div>
+        <div class="appendix-rule"></div>
+        <div class="appendix-body">
+          <p>Each bucket receives a percentage of the total portfolio. The monetary value of each bucket is calculated as:</p>
+          <div class="appendix-formula"><span>Bucket Value (£)</span> = Total Portfolio (£) × Bucket % ÷ 100</div>
+          <p>Allocations can be entered either as a percentage (moving the slider) or as a monetary amount in the £ input field — the tool converts between the two automatically. If you enter a £ amount, it back-calculates the percentage as:</p>
+          <div class="appendix-formula"><span>Bucket %</span> = Entered Amount (£) ÷ Total Portfolio (£) × 100</div>
+          <p>The <strong>Unallocated</strong> pill shows any portfolio value not yet assigned to a bucket:</p>
+          <div class="appendix-formula"><span>Unallocated (£)</span> = Total Portfolio (£) − Liquidity (£) − Lifestyle (£) − Legacy (£)</div>
+        </div>
+      </div>
+
+      <!-- 2. Holding Values -->
+      <div class="appendix-section">
+        <div class="appendix-h2">2. Individual Holding Values</div>
+        <div class="appendix-rule"></div>
+        <div class="appendix-body">
+          <p>Each holding within a bucket can be entered as either a <strong>% of bucket</strong> or a <strong>£ value</strong> — the two fields are linked and update each other in real time:</p>
+          <div class="appendix-formula"><span>Holding Value (£)</span> = Bucket Value (£) × % of Bucket ÷ 100</div>
+          <div class="appendix-formula"><span>% of Bucket</span> = Holding Value (£) ÷ Bucket Value (£) × 100</div>
+          <p>When the total portfolio value or a bucket percentage is adjusted, £ values are preserved (frozen) and the % of bucket fields are back-calculated to reflect the new bucket total. This ensures amounts already entered are not silently overwritten.</p>
+        </div>
+      </div>
+
+      <!-- 3. Bucket Allocation Progress -->
+      <div class="appendix-section">
+        <div class="appendix-h2">3. Bucket Allocation Progress Bar</div>
+        <div class="appendix-rule"></div>
+        <div class="appendix-body">
+          <p>The progress bar within each bucket shows how much of the bucket's total value has been allocated to holdings:</p>
+          <div class="appendix-formula"><span>Used %</span> = Σ (% of Bucket) across all holdings in that bucket</div>
+          <p>The status states are determined as follows:</p>
+          <table class="appendix-table">
+            <tr><th>Condition</th><th>Status</th><th>Colour</th></tr>
+            <tr><td>No holdings / £0 bucket</td><td>—</td><td>Neutral</td></tr>
+            <tr><td>Used % within 0.05% of 100%</td><td>✓ Fully allocated</td><td>Teal / green</td></tr>
+            <tr><td>Used % &gt; 100% (by more than 0.05%)</td><td>⚠ Over by X%</td><td>Red</td></tr>
+            <tr><td>Used % &lt; 100%</td><td>£X remaining (Y%)</td><td>Muted</td></tr>
+          </table>
+          <p class="appendix-note">A 0.05% tolerance is applied around 100% to absorb floating-point rounding that arises when percentages are derived from £ values.</p>
+        </div>
+      </div>
+
+      <!-- 4. Weighted OCF -->
+      <div class="appendix-section">
+        <div class="appendix-h2">4. Ongoing Charges Figure (OCF)</div>
+        <div class="appendix-rule"></div>
+        <div class="appendix-body">
+          <p>OCF is calculated per holding and then summed for each bucket and the total portfolio. The <strong>weighted OCF %</strong> for a bucket uses each holding's % of bucket as its weight:</p>
+          <div class="appendix-formula"><span>OCF (£) per holding</span> = Holding Value (£) × OCF % ÷ 100</div>
+          <div class="appendix-formula"><span>Bucket Weighted OCF %</span> = Σ (% of Bucket × OCF %) ÷ Σ (% of Bucket)</div>
+          <div class="appendix-formula"><span>Total Portfolio OCF (£)</span> = Σ OCF (£) across all holdings in all buckets</div>
+          <div class="appendix-formula"><span>Total Portfolio OCF %</span> = Total OCF (£) ÷ Total Portfolio (£) × 100</div>
+          <p>This methodology matches the original Herbert &amp; Webster spreadsheet.</p>
+        </div>
+      </div>
+
+      <!-- 5. Weighted Yield -->
+      <div class="appendix-section">
+        <div class="appendix-h2">5. Yield</div>
+        <div class="appendix-rule"></div>
+        <div class="appendix-body">
+          <p>Yield is calculated identically to OCF — per holding, then weighted and summed at bucket and portfolio level:</p>
+          <div class="appendix-formula"><span>Yield (£) per holding</span> = Holding Value (£) × Yield % ÷ 100</div>
+          <div class="appendix-formula"><span>Bucket Weighted Yield %</span> = Σ (% of Bucket × Yield %) ÷ Σ (% of Bucket)</div>
+        </div>
+      </div>
+
+      <!-- 6. Weighted Risk -->
+      <div class="appendix-section">
+        <div class="appendix-h2">6. Risk Score (Weighted Average)</div>
+        <div class="appendix-rule"></div>
+        <div class="appendix-body">
+          <p>Risk scores run from 0 (lowest) to 5 (highest). The weighted average risk uses each holding's <strong>£ value</strong> as its weight — ensuring larger positions have proportionally greater influence on the overall score:</p>
+          <div class="appendix-formula"><span>Weighted Risk</span> = Σ (Holding Value £ × Risk Score) ÷ Σ (Holding Values £)</div>
+          <p>This is calculated at both bucket level (shown as the pip meter on each bucket card) and at portfolio level (shown in the summary panel and Firm View).</p>
+          <p>A simple unweighted average would divide the sum of risk scores by the number of holdings — this is deliberately not used, as it ignores the fact that larger holdings represent a greater proportion of the client's exposure.</p>
+          <div class="appendix-note">Holdings with a risk score of 0 are treated as a legitimate rating (e.g. cash or money market funds) and are included in the weighted average. A holding assigned 0 will pull the weighted average downward proportionally to its value.</div>
+        </div>
+      </div>
+
+      <!-- 7. Portfolio Risk Pip Meter -->
+      <div class="appendix-section">
+        <div class="appendix-h2">7. Risk Pip Meter Display</div>
+        <div class="appendix-rule"></div>
+        <div class="appendix-body">
+          <p>The six rectangular pips (0–5) are filled up to the <strong>rounded integer</strong> of the weighted average risk score — this determines which pips are lit, and the colour of those pips:</p>
+          <table class="appendix-table">
+            <tr><th>Pip</th><th>Colour</th><th>Interpretation</th></tr>
+            <tr><td>0</td><td>White / neutral</td><td>No measurable risk</td></tr>
+            <tr><td>1</td><td>Teal</td><td>Very low risk</td></tr>
+            <tr><td>2</td><td>Yellow</td><td>Low–medium risk</td></tr>
+            <tr><td>3</td><td>Amber</td><td>Medium risk</td></tr>
+            <tr><td>4</td><td>Red</td><td>High risk</td></tr>
+            <tr><td>5</td><td>Dark red</td><td>Very high risk</td></tr>
+          </table>
+          <p>The numeric score displayed alongside the meter shows the precise weighted average to two decimal places — the pip display is rounded for visual clarity only.</p>
+        </div>
+      </div>
+
+      <!-- 8. Summary Panel -->
+      <div class="appendix-section">
+        <div class="appendix-h2">8. Summary Panel</div>
+        <div class="appendix-rule"></div>
+        <div class="appendix-body">
+          <p>The summary panel at the bottom of the planner consolidates all figures:</p>
+          <table class="appendix-table">
+            <tr><th>Field</th><th>How it is calculated</th></tr>
+            <tr><td>Total Portfolio</td><td>The value entered in the total portfolio input</td></tr>
+            <tr><td>Portfolio Risk Level</td><td>Weighted average risk (by £ value) across all holdings in all three buckets</td></tr>
+            <tr><td>Unallocated</td><td>Total Portfolio minus the sum of all three bucket values</td></tr>
+            <tr><td>Total OCF</td><td>Sum of OCF £ across every holding in all buckets; expressed as both £ and % of total portfolio</td></tr>
+            <tr><td>Donut chart</td><td>Visual split of Liquidity / Lifestyle / Legacy bucket values as a proportion of total portfolio</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- 9. Allocation Warning -->
+      <div class="appendix-section">
+        <div class="appendix-h2">9. Allocation Warning (Save &amp; Export)</div>
+        <div class="appendix-rule"></div>
+        <div class="appendix-body">
+          <p>When saving a client record or exporting to Excel, the tool checks whether any bucket that contains holdings is not fully allocated. A bucket is considered fully allocated if its used percentage is within 0.05% of 100%. Buckets with no holdings are skipped. If issues are found, a modal presents:</p>
+          <table class="appendix-table">
+            <tr><th>Issue type</th><th>Shown as</th></tr>
+            <tr><td>Under-allocated</td><td>£X remaining · Y% unallocated (gold)</td></tr>
+            <tr><td>Over-allocated</td><td>+Y% over · £X excess (red)</td></tr>
+          </table>
+          <p>The user may proceed anyway or go back and correct the allocation.</p>
+        </div>
+      </div>
+
+      <!-- 10. Firm View -->
+      <div class="appendix-section">
+        <div class="appendix-h2">10. Firm View</div>
+        <div class="appendix-rule"></div>
+        <div class="appendix-body">
+          <p>The Firm View aggregates data across <strong>all saved client records</strong> in browser storage, plus the current unsaved session if it contains data. All monetary figures, weighted averages, and top-10 rankings are derived from the same formulas as above, applied across the combined dataset:</p>
+          <table class="appendix-table">
+            <tr><th>Metric</th><th>Method</th></tr>
+            <tr><td>Total AUM</td><td>Sum of total portfolio values across all clients</td></tr>
+            <tr><td>Total OCF</td><td>Sum of all individual holding OCF £ values across all clients</td></tr>
+            <tr><td>Weighted Risk</td><td>Value-weighted average of risk scores across all holdings from all clients</td></tr>
+            <tr><td>Top 10 funds</td><td>Holdings grouped by fund name, summed by £ value, ranked descending</td></tr>
+            <tr><td>Top 10 clients</td><td>Per-client total £ value of all holdings, ranked descending</td></tr>
+            <tr><td>Top 10 wrappers</td><td>Holdings grouped by wrapper type, summed by £ value, ranked descending</td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="allocWarningModal">
+    <div class="alloc-modal-box">
+      <div class="alloc-modal-icon">⚠</div>
+      <div class="alloc-modal-title" id="allocModalTitle">Allocation Warning</div>
+      <div class="alloc-modal-sub" id="allocModalSub">Some buckets are not fully allocated</div>
+      <div class="alloc-modal-issues" id="allocModalIssues"></div>
+      <div class="alloc-modal-buttons">
+        <button class="alloc-modal-btn cancel" onclick="closeAllocModal()">Go Back</button>
+        <button class="alloc-modal-btn proceed" id="allocModalProceedBtn">Proceed Anyway</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ── FIRM VIEW ──────────────────────────────────────────────────────────
+  const FV_COLORS = {
+    liquidity: '#4A90C4',
+    lifestyle: '#B8942A',
+    legacy:    '#6B9E6B'
+  };
+  const BUCKET_LABELS = { liquidity: 'Liquidity', lifestyle: 'Lifestyle', legacy: 'Legacy' };
+  let _fvCharts = [];
+
+  function openFirmView() {
+    const overlay = document.getElementById('firmViewOverlay');
+    overlay.classList.add('open');
+    renderFirmView();
+  }
+
+  function closeFirmView() {
+    document.getElementById('firmViewOverlay').classList.remove('open');
+    _fvCharts.forEach(c => { try { c.destroy(); } catch(e){} });
+    _fvCharts = [];
+  }
+
+  function fmtK(v) {
+    if (!v) return '£0';
+    if (v >= 1000000) return '£' + (v/1000000).toFixed(2) + 'm';
+    if (v >= 1000)    return '£' + Math.round(v/1000) + 'k';
+    return '£' + Math.round(v);
+  }
+
+  function renderFirmView() {
+    _fvCharts.forEach(c => { try { c.destroy(); } catch(e){} });
+    _fvCharts = [];
+
+    // ── Aggregate ALL saved clients + current unsaved state ──────────────
+    const allClients = getAllClients();
+    const clientRecords = Object.entries(allClients).map(([name, data]) => ({ name, ...data }));
+
+    // Also include current (possibly unsaved) state if it has data
+    const currentKey = getClientKey();
+    const currentHasData = state.total > 0 || Object.values(state.holdings).some(hs => hs.length > 0);
+    if (currentHasData && !allClients[currentKey]) {
+      clientRecords.push({
+        name: currentKey || 'Current (unsaved)',
+        state,
+        clientPrefix:  document.getElementById('clientPrefix').value,
+        clientName:    document.getElementById('clientName').value,
+        adviserName:   document.getElementById('adviserName').value,
+        planDate:      document.getElementById('planDate').value,
+      });
+    }
+
+    const totalClients = clientRecords.length;
+    const savedCount   = Object.keys(allClients).length;
+
+    document.getElementById('fvSubtitle').textContent =
+      totalClients + ' client' + (totalClients !== 1 ? 's' : '') + ' · ' +
+      savedCount + ' saved record' + (savedCount !== 1 ? 's' : '');
+
+    // ── Build master holdings list across all clients ─────────────────────
+    const allHoldings = [];  // { fund, wrapper, bucket, val, risk, ocf, yield_, client, adviser }
+    let grandTotal = 0;
+
+    clientRecords.forEach(rec => {
+      const st = rec.state || {};
+      const total = st.total || 0;
+      grandTotal += total;
+      ['liquidity','lifestyle','legacy'].forEach(bk => {
+        const bucketAmt = total * ((st.pcts||{})[bk] || 0) / 100;
+        ((st.holdings||{})[bk] || []).forEach(h => {
+          const pct = parseFloat(h.pct) || 0;
+          const val = pct ? bucketAmt * pct / 100 : (parseFloat(h.val) || 0);
+          if (val > 0 || h.fund) {
+            allHoldings.push({
+              fund:    h.fund || 'Unnamed fund',
+              wrapper: h.wrapper || '',
+              planRef: h.planRef || '',
+              bucket:  bk,
+              val,
+              risk:    h.risk || 0,
+              ocf:     parseFloat(h.ocf) || 0,
+              yield_:  parseFloat(h.yield_) || 0,
+              client:  rec.name || 'Unknown',
+              adviser: rec.adviserName || '—',
+            });
+          }
+        });
+      });
+    });
+
+    if (totalClients === 0 && allHoldings.length === 0) {
+      document.getElementById('fvBody').innerHTML =
+        '<div class="fv-no-data">No saved clients yet. Save a client record to see the firm view.</div>';
+      return;
+    }
+
+    const totalAllocated = allHoldings.reduce((s, h) => s + h.val, 0);
+    let totalOcfGbp = 0, totalYieldGbp = 0;
+    allHoldings.forEach(h => { totalOcfGbp += h.val * h.ocf / 100; totalYieldGbp += h.val * h.yield_ / 100; });
+    let rW = 0, rTotal = 0;
+    allHoldings.forEach(h => { rW += h.val; rTotal += h.val * h.risk; });
+    const wtdRisk = rW > 0 ? (rTotal / rW).toFixed(2) : '—';
+
+    // ── Top 10 helpers ────────────────────────────────────────────────────
+    function top10(arr, keyFn, valFn) {
+      const map = {};
+      arr.forEach(h => { const k = keyFn(h); map[k] = (map[k]||0) + valFn(h); });
+      return Object.entries(map).sort((a,b) => b[1]-a[1]).slice(0,10);
+    }
+    const top10Funds    = top10(allHoldings, h => h.fund,    h => h.val);
+    const top10Wrappers = top10(allHoldings, h => h.wrapper||'Unspecified', h => h.val);
+    const top10Clients  = top10(allHoldings, h => h.client,  h => h.val);
+    const top10Advisers = top10(allHoldings, h => h.adviser, h => h.val);
+
+    // Bucket totals across all clients
+    const bucketTotals = { liquidity: 0, lifestyle: 0, legacy: 0 };
+    clientRecords.forEach(rec => {
+      const st = rec.state || {};
+      const total = st.total || 0;
+      ['liquidity','lifestyle','legacy'].forEach(bk => {
+        bucketTotals[bk] += total * ((st.pcts||{})[bk] || 0) / 100;
+      });
+    });
+
+    // ── HTML ───────────────────────────────────────────────────────────────
+    let html = '';
+
+    // Stat row
+    html += '<div class="fv-stat-row" style="margin-bottom:24px;">';
+    html += `<div class="fv-mini-stat"><div class="fv-mini-val">${totalClients}</div><div class="fv-mini-lbl">Clients</div></div>`;
+    html += `<div class="fv-mini-stat"><div class="fv-mini-val">${fmt(grandTotal)}</div><div class="fv-mini-lbl">Total AUM</div></div>`;
+    html += `<div class="fv-mini-stat"><div class="fv-mini-val">${fmt(totalOcfGbp)}</div><div class="fv-mini-lbl">Total OCF</div></div>`;
+    html += `<div class="fv-mini-stat"><div class="fv-mini-val">${wtdRisk}</div><div class="fv-mini-lbl">Weighted risk</div></div>`;
+    html += '</div>';
+
+    // Row 1: bucket donut + top 10 funds bar
+    html += '<div class="fv-grid">';
+
+    html += '<div class="fv-card">';
+    html += '<div class="fv-card-title">AUM by bucket</div>';
+    html += '<div style="position:relative;height:220px;"><canvas id="fvDonut"></canvas></div>';
+    html += '<div class="fv-legend">';
+    ['liquidity','lifestyle','legacy'].forEach(bk => {
+      html += `<div class="fv-legend-item"><div class="fv-legend-dot" style="background:${FV_COLORS[bk]}"></div>${BUCKET_LABELS[bk]} — ${fmt(bucketTotals[bk])}</div>`;
+    });
+    html += '</div></div>';
+
+    html += '<div class="fv-card">';
+    html += '<div class="fv-card-title">Top 10 funds by value</div>';
+    const fund10H = Math.max(220, top10Funds.length * 38 + 30);
+    html += `<div style="position:relative;height:${fund10H}px;"><canvas id="fvFundBar"></canvas></div>`;
+    html += '</div>';
+
+    html += '</div>';
+
+    // Row 2: top 10 clients + wrapper breakdown
+    html += '<div class="fv-grid">';
+
+    html += '<div class="fv-card">';
+    html += '<div class="fv-card-title">Top 10 clients by AUM</div>';
+    const cli10H = Math.max(220, top10Clients.length * 38 + 30);
+    html += `<div style="position:relative;height:${cli10H}px;"><canvas id="fvCliBar"></canvas></div>`;
+    html += '</div>';
+
+    html += '<div class="fv-card">';
+    html += '<div class="fv-card-title">Top 10 wrapper types by value</div>';
+    const wrap10H = Math.max(220, top10Wrappers.length * 38 + 30);
+    html += `<div style="position:relative;height:${wrap10H}px;"><canvas id="fvWrapBar"></canvas></div>`;
+    html += '</div>';
+
+    html += '</div>';
+
+    // Row 3: risk distribution + adviser split
+    html += '<div class="fv-grid">';
+
+    html += '<div class="fv-card">';
+    html += '<div class="fv-card-title">Risk distribution (all holdings)</div>';
+    html += '<div style="position:relative;height:200px;"><canvas id="fvRiskDist"></canvas></div>';
+    html += '</div>';
+
+    if (top10Advisers.length > 1) {
+      html += '<div class="fv-card">';
+      html += '<div class="fv-card-title">AUM by adviser</div>';
+      html += '<div style="position:relative;height:200px;"><canvas id="fvAdviser"></canvas></div>';
+      html += '</div>';
+    } else {
+      html += '<div class="fv-card">';
+      html += '<div class="fv-card-title">OCF &amp; Yield (firm total)</div>';
+      html += '<div style="position:relative;height:200px;"><canvas id="fvOcfYield"></canvas></div>';
+      html += '</div>';
+    }
+
+    html += '</div>';
+
+    // Full-width holdings table
+    if (allHoldings.length > 0) {
+      html += '<div class="fv-card fv-card-full" style="margin-bottom:0;">';
+      html += '<div class="fv-card-title">All holdings across all clients</div>';
+      html += '<div style="overflow-x:auto;">';
+      html += '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
+      html += '<thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);">';
+      ['Client','Fund / Investment','Bucket','Wrapper','Plan Ref','Value £','% of AUM','Risk','OCF £','Yield £'].forEach(h => {
+        html += `<th style="text-align:left;padding:8px 10px;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);font-weight:400;">${h}</th>`;
+      });
+      html += '</tr></thead><tbody>';
+      [...allHoldings].sort((a,b) => b.val - a.val).forEach((h, i) => {
+        const bg = i % 2 ? 'rgba(255,255,255,0.03)' : 'transparent';
+        const pctAUM = grandTotal > 0 ? (h.val / grandTotal * 100).toFixed(2) + '%' : '—';
+        html += `<tr style="background:${bg};border-bottom:1px solid rgba(255,255,255,0.05);">`;
+        html += `<td style="padding:8px 10px;color:rgba(255,255,255,0.5);font-size:11px;">${h.client}</td>`;
+        html += `<td style="padding:8px 10px;color:var(--white);">${h.fund}</td>`;
+        html += `<td style="padding:8px 10px;"><span style="background:${FV_COLORS[h.bucket]}22;color:${FV_COLORS[h.bucket]};border-radius:4px;padding:2px 7px;font-size:10px;">${BUCKET_LABELS[h.bucket]}</span></td>`;
+        html += `<td style="padding:8px 10px;color:rgba(255,255,255,0.6);">${h.wrapper||'—'}</td>`;
+        html += `<td style="padding:8px 10px;color:rgba(255,255,255,0.4);font-size:11px;font-family:'Courier New',monospace;">${h.planRef||'—'}</td>`;
+        html += `<td style="padding:8px 10px;font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--white);">${fmt(h.val)}</td>`;
+        html += `<td style="padding:8px 10px;color:rgba(255,255,255,0.5);">${pctAUM}</td>`;
+        html += `<td style="padding:8px 10px;color:rgba(255,255,255,0.6);">${h.risk}</td>`;
+        html += `<td style="padding:8px 10px;color:rgba(255,255,255,0.6);">${fmt(h.val * h.ocf / 100)}</td>`;
+        html += `<td style="padding:8px 10px;color:rgba(255,255,255,0.6);">${fmt(h.val * h.yield_ / 100)}</td>`;
+        html += '</tr>';
+      });
+      html += '</tbody></table></div></div>';
+    }
+
+    document.getElementById('fvBody').innerHTML = html;
+
+    // ── Charts ────────────────────────────────────────────────────────────
+    requestAnimationFrame(() => {
+      const chartBase = {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        animation: { duration: 300 }
+      };
+      const xAxis = { ticks: { color: 'rgba(255,255,255,0.4)', font:{size:11}, callback: v => fmtK(v) }, grid: { color: 'rgba(255,255,255,0.06)' } };
+      const yAxis = { ticks: { color: 'rgba(255,255,255,0.6)', font:{size:11} }, grid: { display: false } };
+      const PALETTE = ['#4A90C4','#B8942A','#6B9E6B','#8B6BAD','#C4863A','#5BA8A0','#C46A6A','#7A8C6B','#A07040','#6070A0'];
+
+      // Donut
+      const dChart = new Chart(document.getElementById('fvDonut'), {
+        type: 'doughnut',
+        data: { labels: ['Liquidity','Lifestyle','Legacy'],
+          datasets: [{ data: Object.values(bucketTotals), backgroundColor: Object.values(FV_COLORS), borderColor: '#1a2a4a', borderWidth: 3, hoverOffset: 6 }] },
+        options: { ...chartBase, cutout: '62%', plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ' '+fmt(ctx.raw) } } } }
+      });
+      _fvCharts.push(dChart);
+
+      // Top 10 funds
+      const fundChart = new Chart(document.getElementById('fvFundBar'), {
+        type: 'bar',
+        data: { labels: top10Funds.map(([k]) => k.length>24?k.slice(0,22)+'…':k),
+          datasets: [{ data: top10Funds.map(([,v]) => v), backgroundColor: top10Funds.map((_,i) => PALETTE[i%PALETTE.length]+'cc'), borderColor: top10Funds.map((_,i) => PALETTE[i%PALETTE.length]), borderWidth:1, borderRadius:4 }] },
+        options: { ...chartBase, indexAxis:'y',
+          scales: { x: xAxis, y: yAxis },
+          plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ' '+fmt(ctx.raw) } } } }
+      });
+      _fvCharts.push(fundChart);
+
+      // Top 10 clients
+      const cliChart = new Chart(document.getElementById('fvCliBar'), {
+        type: 'bar',
+        data: { labels: top10Clients.map(([k]) => k.length>24?k.slice(0,22)+'…':k),
+          datasets: [{ data: top10Clients.map(([,v]) => v), backgroundColor: PALETTE.map(c => c+'cc'), borderColor: PALETTE, borderWidth:1, borderRadius:4 }] },
+        options: { ...chartBase, indexAxis:'y',
+          scales: { x: xAxis, y: yAxis },
+          plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ' '+fmt(ctx.raw) } } } }
+      });
+      _fvCharts.push(cliChart);
+
+      // Top 10 wrappers
+      const wrapChart = new Chart(document.getElementById('fvWrapBar'), {
+        type: 'bar',
+        data: { labels: top10Wrappers.map(([k]) => k),
+          datasets: [{ data: top10Wrappers.map(([,v]) => v), backgroundColor: PALETTE.map(c => c+'cc'), borderColor: PALETTE, borderWidth:1, borderRadius:4 }] },
+        options: { ...chartBase, indexAxis:'y',
+          scales: { x: xAxis, y: yAxis },
+          plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ' '+fmt(ctx.raw) } } } }
+      });
+      _fvCharts.push(wrapChart);
+
+      // Risk distribution stacked by bucket
+      const riskColors = ['rgba(255,255,255,0.2)','#4fc3a1','#f0c040','#e88844','#d95f5f','#9b2020'];
+      const riskByBucket = ['liquidity','lifestyle','legacy'].map(bk => {
+        const byRisk = [0,0,0,0,0,0];
+        allHoldings.filter(h => h.bucket===bk).forEach(h => { byRisk[h.risk||0] += h.val; });
+        return byRisk;
+      });
+      const riskDs = [0,1,2,3,4,5].map(r => ({
+        label:'Risk '+r, data:['liquidity','lifestyle','legacy'].map((_,i) => riskByBucket[i][r]),
+        backgroundColor: riskColors[r], borderWidth:0, borderRadius:0
+      }));
+      const riskChart = new Chart(document.getElementById('fvRiskDist'), {
+        type: 'bar',
+        data: { labels: ['Liquidity','Lifestyle','Legacy'], datasets: riskDs },
+        options: { ...chartBase,
+          scales: {
+            x: { stacked:true, ticks:{ color:'rgba(255,255,255,0.5)',font:{size:11} }, grid:{ color:'rgba(255,255,255,0.06)' } },
+            y: { stacked:true, ticks:{ color:'rgba(255,255,255,0.4)',font:{size:11}, callback: v => fmtK(v) }, grid:{ color:'rgba(255,255,255,0.06)' } }
+          },
+          plugins: { legend:{ display:true, labels:{ color:'rgba(255,255,255,0.5)',font:{size:11},boxWidth:10 } }, tooltip:{ callbacks:{ label: ctx => ' Risk '+ctx.datasetIndex+': '+fmt(ctx.raw) } } }
+        }
+      });
+      _fvCharts.push(riskChart);
+
+      // Adviser chart (if >1) or OCF/Yield
+      const adviserEl = document.getElementById('fvAdviser');
+      if (adviserEl) {
+        const advChart = new Chart(adviserEl, {
+          type: 'doughnut',
+          data: { labels: top10Advisers.map(([k]) => k),
+            datasets: [{ data: top10Advisers.map(([,v]) => v), backgroundColor: PALETTE.map(c => c+'dd'), borderColor:'#1a2a4a', borderWidth:3, hoverOffset:6 }] },
+          options: { ...chartBase, cutout:'55%',
+            plugins: { legend:{ display:true, position:'right', labels:{ color:'rgba(255,255,255,0.6)',font:{size:11},boxWidth:10, formatter: (label, ctx) => label+' '+fmtK(ctx.dataset.data[ctx.dataIndex]) } }, tooltip:{ callbacks:{ label: ctx => ' '+fmt(ctx.raw) } } } }
+        });
+        _fvCharts.push(advChart);
+      }
+
+      const ocfEl = document.getElementById('fvOcfYield');
+      if (ocfEl) {
+        const bkKeys = ['liquidity','lifestyle','legacy'];
+        const ocfByBucket  = bkKeys.map(bk => allHoldings.filter(h=>h.bucket===bk).reduce((s,h)=>s+h.val*h.ocf/100,0));
+        const yldByBucket  = bkKeys.map(bk => allHoldings.filter(h=>h.bucket===bk).reduce((s,h)=>s+h.val*h.yield_/100,0));
+        const ocfChart = new Chart(ocfEl, {
+          type: 'bar',
+          data: { labels:['Liquidity','Lifestyle','Legacy'],
+            datasets: [
+              { label:'OCF £',   data:ocfByBucket, backgroundColor:'#4A90C499', borderColor:'#4A90C4', borderWidth:1, borderRadius:4 },
+              { label:'Yield £', data:yldByBucket, backgroundColor:'#6B9E6B99', borderColor:'#6B9E6B', borderWidth:1, borderRadius:4 }
+            ] },
+          options: { ...chartBase,
+            scales: {
+              x: { ticks:{color:'rgba(255,255,255,0.5)',font:{size:11}}, grid:{color:'rgba(255,255,255,0.06)'} },
+              y: { ticks:{color:'rgba(255,255,255,0.4)',font:{size:11},callback:v=>fmtK(v)}, grid:{color:'rgba(255,255,255,0.06)'} }
+            },
+            plugins: { legend:{ display:true, labels:{color:'rgba(255,255,255,0.5)',font:{size:11},boxWidth:10} }, tooltip:{ callbacks:{ label: ctx => ' '+ctx.dataset.label+': '+fmt(ctx.raw) } } }
+          }
+        });
+        _fvCharts.push(ocfChart);
+      }
+    });
+  }
+
+  function refreshCalc() {
+    update();
+    const statusEl = document.getElementById('saveStatus');
+    statusEl.textContent = '✓ Re-run';
+    statusEl.classList.add('visible');
+    setTimeout(() => { statusEl.textContent = ''; statusEl.classList.remove('visible'); }, 1800);
+  }
+
+  // ── APPENDIX ────────────────────────────────────────────────────────────
+  function openAppendix() {
+    document.getElementById('appendixOverlay').classList.add('open');
+  }
+  function closeAppendix() {
+    document.getElementById('appendixOverlay').classList.remove('open');
+  }
+  document.getElementById('appendixOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeAppendix();
+  });
+
+  let _toastTimer = null;
+  let _wasFullyAllocated = false;
+  const _origUpdate = update;
+  // Wrap update to detect 100% allocation
+  (function() {
+    const _base = update;
+    update = function() {
+      _base();
+      const totalPct = (state.pcts.liquidity||0)+(state.pcts.lifestyle||0)+(state.pcts.legacy||0);
+      const isNow = (totalPct === 100 && state.total > 0);
+      if (isNow && !_wasFullyAllocated) {
+        showAllocToast();
+      }
+      _wasFullyAllocated = isNow;
+    };
+  })();
+  function showAllocToast() {
+    const t = document.getElementById('allocToast');
+    t.classList.add('show');
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+  </script>
+</body>
+</html>
